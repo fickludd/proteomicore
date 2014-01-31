@@ -1,4 +1,4 @@
-package mrm.data
+package se.lth.immun.math
 
 
 object Ratios {

@@ -1,4 +1,4 @@
-package jt.signal
+package se.lth.immun.signal
 
 import scala.annotation.unchecked
 import org.apache.commons.math3.stat.StatUtils
