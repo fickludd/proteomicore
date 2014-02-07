@@ -30,16 +30,16 @@ class Rest(
 
 
 
-object JTApplication {
+object CLIApplication {
 	var log:LogFile 	= null
 	var logDir:String 	= "log"
 }
 
 
 
-trait JTApplication {
+trait CLIApplication {
 	
-	import JTApplication._
+	import CLIApplication._
 	
 	private var _options		= new ArrayBuffer[Option] 
 	private var _args			:Seq[Arg] 			= Nil
