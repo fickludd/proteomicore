@@ -7,7 +7,7 @@
  * 
  * Modified by Ufuk Kirik to add timestamps 
  */
-package se.lth.immun.biojtools.ui.swing;
+package se.lth.immun.swing;
 
 import java.io.*;
 import java.sql.Timestamp;

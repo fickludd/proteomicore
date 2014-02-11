@@ -5,7 +5,7 @@
  * as explained at http://creativecommons.org/licenses/publicdomain
  */
 
-package se.lth.immun.biojtools.ui.swing;
+package se.lth.immun.swing;
 
 import java.awt.EventQueue;
 import java.util.concurrent.Callable;

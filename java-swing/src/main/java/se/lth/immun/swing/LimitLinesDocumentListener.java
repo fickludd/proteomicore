@@ -5,7 +5,7 @@
  * writing and sharing this class with Java community
  */
 
-package se.lth.immun.biojtools.ui.swing;
+package se.lth.immun.swing;
 
 import javax.swing.*;
 import javax.swing.event.*;
