@@ -5,7 +5,7 @@
  * as explained at http://creativecommons.org/licenses/publicdomain
  */
 
-package se.lth.immun.biojtools.ui.swing;
+package se.lth.immun.swing;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -27,7 +27,12 @@ import javax.swing.Timer;
  */
 public class Blip extends JComponent implements ActionListener {
 
-    /** Delay per frame, in milliseconds. */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** Delay per frame, in milliseconds. */
     public static final int DELAY = 50;
 
     /** Sweep increment per frame, in degrees. */

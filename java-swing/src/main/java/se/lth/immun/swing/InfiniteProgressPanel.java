@@ -1,4 +1,4 @@
-package se.lth.immun.biojtools.ui.swing;
+package se.lth.immun.swing;
 
 import java.awt.Color;
 import java.awt.Graphics;

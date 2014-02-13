@@ -1,4 +1,4 @@
-package se.lth.immun.biojtools.ui.swing;
+package se.lth.immun.swing;
 /**
  * Code inspired from several online resources, modified by Ufuk Kirik
  * @author Ufuk Kirik
