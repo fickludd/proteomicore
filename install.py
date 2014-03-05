@@ -15,6 +15,7 @@ if os.system("mvn -version") != 0:
 
 def mvn(x):
 	os.chdir(x)
+	print "#" * 78
 	os.system("mvn %s" % cmd)
 	os.chdir("..")
 	
@@ -35,6 +36,7 @@ if cmd == "install" or cmd == "clean" or cmd == "test":
 	mvn("Proteomics")
 	mvn("SalvatorDenoise")
 	mvn("TraML")
+	mvn("DecoyTraMLGenerator")
 else:
 	print "unknown mvn command '%s'" % cmd
 	exit(1)
