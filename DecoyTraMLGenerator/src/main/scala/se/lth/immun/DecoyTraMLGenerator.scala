@@ -163,7 +163,8 @@ object DecoyTraMLGenerator extends CLIApplication {
     					ions.map(i => i.molecule.fragmentType+""+i.molecule.ordinal).mkString(" ")))
     		} catch {
     			case e:Exception => {
-    				println("WAAHG")
+    				println("ERROR IN peptide %8.3f %s | %s".format(key._1, p.toString, ts.map(x => "%.3f".format(x.q3)).mkString(" ")))
+				e.printStackTrace
     			}
     		}
     		
@@ -205,25 +206,27 @@ object DecoyTraMLGenerator extends CLIApplication {
 	
 	
 	def findIons(q3s:Seq[Double], peptide:Peptide):Seq[Ion[PeptideFragment]] = {
-		var fs = peptide.getFragments(Array(EPeptideFragment.y, EPeptideFragment.b))
+		val fs = peptide.getFragments(Array(EPeptideFragment.y, EPeptideFragment.b))
+		var fsz = (for {
+				f <- fs
+				z <- 1 until 4
+			} yield (f, z)).toSet
 		var retFs = new ArrayBuffer[Ion[PeptideFragment]]
 		q3s.map(q3 => {
 			var diff = Double.MaxValue
 			var best:PeptideFragment = null
-			var z = 0
-			for (f <- fs) {
-				if (math.abs(f.mass - (q3 - 1)) < diff) {
-					diff = math.abs(f.mass - (q3 - 1))
+			var bestz = 0
+			for ((f,z) <- fsz) {
+				if (math.abs(f.mass - (z*q3 - z)) < diff) {
+					diff = math.abs(f.mass - (z*q3 - z))
 					best = f
-					z = 1
-				} else if (math.abs(f.mass - (2*q3 - 2)) < diff) {
-					diff = math.abs(f.mass - (2*q3 - 2))
-					best = f
-					z = 2
+					bestz = z
 				}
 			}
-			retFs += new Ion(best, z)
-			fs = fs.filter(_ != best)
+			if (best != null) {
+				retFs += new Ion(best, bestz)
+				fsz -= best -> bestz
+			}
 		})
 		return retFs
 	}
