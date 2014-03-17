@@ -134,7 +134,7 @@ object GhostBinaryDataArray {
 		
 	
 	
-	def toBinaryDataArray(a:Array[Double], dataDef:DataDef):BinaryDataArray = {
+	def toBinaryDataArray(a:Seq[Double], dataDef:DataDef):BinaryDataArray = {
 		var double			= true
 		var compression		= false
 		
@@ -177,12 +177,6 @@ object GhostBinaryDataArray {
 				accession = ZLIB_COMPRESSION_ACC
 				name = "zlib compression"
 			}
-		else
-			b.cvParams += new CvParam {
-				cvRef = "MS"
-				accession = NO_COMPRESSION_ACC
-				name = "no compression"
-			}
 		
 		if (dataDef.doublePrecision)
 			b.cvParams += new CvParam {
@@ -197,6 +191,7 @@ object GhostBinaryDataArray {
 				name = "32-bit float"
 			}
 		
+		var numCompression = true
 		val afterNumpress = dataDef.numCompression match {
 			case ACC_NUMPRESS_LINEAR => 
 				b.cvParams += new CvParam {
@@ -204,9 +199,10 @@ object GhostBinaryDataArray {
 					accession = ACC_NUMPRESS_LINEAR
 					name = "MS-Numpress linear prediction compression"
 				}
-				val fixedPoint = MSNumpress.optimalLinearFixedPoint(a, a.length)
-				val result = new Array[Byte](a.length * 5 + 8)
-				val encBytes = MSNumpress.encodeLinear(a, a.length, result, fixedPoint)
+				val arr = a.toArray
+				val fixedPoint = MSNumpress.optimalLinearFixedPoint(arr, arr.length)
+				val result = new Array[Byte](arr.length * 5 + 8)
+				val encBytes = MSNumpress.encodeLinear(arr, arr.length, result, fixedPoint)
 				BytesLength(result, encBytes)
 				
 			case ACC_NUMPRESS_PIC => 
@@ -215,8 +211,9 @@ object GhostBinaryDataArray {
 					accession = ACC_NUMPRESS_PIC
 					name = "MS-Numpress positive integer compression"
 				}
-				val result = new Array[Byte](a.length * 5)
-				val encBytes = MSNumpress.encodePic(a, a.length, result)
+				val arr = a.toArray
+				val result = new Array[Byte](arr.length * 5)
+				val encBytes = MSNumpress.encodePic(arr, arr.length, result)
 				BytesLength(result, encBytes)
 				
 			case ACC_NUMPRESS_SLOF => 
@@ -225,15 +222,25 @@ object GhostBinaryDataArray {
 					accession = ACC_NUMPRESS_SLOF
 					name = "MS-Numpress short logged float compression"
 				}
-				val fixedPoint = MSNumpress.optimalSlofFixedPoint(a, a.length)
-				val result = new Array[Byte](a.length * 2 + 8)
-				val encBytes = MSNumpress.encodeSlof(a, a.length, result, fixedPoint)
+				val arr = a.toArray
+				val fixedPoint = MSNumpress.optimalSlofFixedPoint(arr, arr.length)
+				val result = new Array[Byte](arr.length * 2 + 8)
+				val encBytes = MSNumpress.encodeSlof(arr, arr.length, result, fixedPoint)
 				BytesLength(result, encBytes)
 				
 			case _ => 
+				numCompression = false
 				if (double)	BytesLength(codeDoubleArray(a), a.length * Base64.DOUBLE_SIZE)
 				else 		BytesLength(codeFloatArray(a), a.length * Base64.FLOAT_SIZE)
 		}
+		
+		
+		if (!numCompression && !dataDef.zlibCompression)
+			b.cvParams += new CvParam {
+				cvRef = "MS"
+				accession = NO_COMPRESSION_ACC
+				name = "no compression"
+			}
 		
 		
 		val afterZlib = 
@@ -260,14 +267,14 @@ object GhostBinaryDataArray {
 	
 	
 	
-	def codeDoubleArray(arr:Array[Double]):Array[Byte] = {
+	def codeDoubleArray(arr:Seq[Double]):Array[Byte] = {
 		var ba = new Array[Byte](arr.length * Base64.DOUBLE_SIZE)
 		for (d <- 0 until arr.length)
 			codeDouble(arr(d), ba, d * Base64.DOUBLE_SIZE)
 		return ba
 	}
 	
-	def codeFloatArray(arr:Array[Double]):Array[Byte] = {
+	def codeFloatArray(arr:Seq[Double]):Array[Byte] = {
 		var ba = new Array[Byte](arr.length * Base64.FLOAT_SIZE)
 		for (f <- 0 until arr.length)
 			codeFloat(arr(f).toFloat, ba, f * Base64.FLOAT_SIZE)

@@ -29,8 +29,8 @@ class GhostChromatogram(
 	import ms.numpress.MSNumpress._
 	
 	var id:String 					= null
-	var times:Array[Double] 		= null
-	var intensities:Array[Double] 	= null
+	var times:Seq[Double] 			= null
+	var intensities:Seq[Double] 	= null
 	var timeDef:GhostBinaryDataArray.DataDef = null
 	var intensityDef:GhostBinaryDataArray.DataDef = null
 	

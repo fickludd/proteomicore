@@ -78,8 +78,8 @@ class GhostSpectrum {
 	
 	var id:String 					= null
 	var spectrum:Spectrum 			= null
-	var mzs:Array[Double] 			= null
-	var intensities:Array[Double] 	= null
+	var mzs:Seq[Double] 			= null
+	var intensities:Seq[Double] 	= null
 	var dataDef:GhostBinaryDataArray.DataDef = null
 	var msLevel 			= 0
 	var basePeakIntensity 	= 0.0
