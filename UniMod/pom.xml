@@ -5,6 +5,10 @@
   <version>0.1.0</version>
   <inceptionYear>2014</inceptionYear>
   
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
    
   <dependencies>
 	<dependency>
@@ -17,7 +21,6 @@
 		<groupId>se.lth.immun</groupId>
 		<artifactId>Proteins</artifactId>
 		<version>1.1.2</version>
-		<scope>test</scope>
 	</dependency>
   </dependencies>
   
