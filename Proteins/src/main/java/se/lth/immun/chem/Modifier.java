@@ -1,20 +1,9 @@
 package se.lth.immun.chem;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Modifier {
-
-	static class Molecule implements IMolecule {
-		
-		ElementComposition ec;
-		
-		Molecule(Element[] elements, int[] counts) {
-			ec = new ElementComposition(elements, counts);
-		}
-		public ElementComposition getComposition() { return ec; }
-		public double monoisotopicMass() { return ec.monoisotopicMass(); }
-		public IsotopeDistribution getIsotopeDistribution() { return ec.getIsotopeDistribution(); }
-	}
 	
 	static class Mod implements IModifier {
 		
@@ -95,38 +84,70 @@ public class Modifier {
 	
 	
 	
-	
-	
 	public static IMolecule parseMolecule(String str) {
+		return parseMolecule(str, null);
+	}
+	
+	public static IMolecule parseMolecule(String str, Map<String, ElementComposition> dict) {
 		String[] elementStrs = str.split(" ");
-		int n = elementStrs.length;
-		int[] counts = new int[n];
-		Element[] elements = new Element[n];
+		int n 				= elementStrs.length;
+		int[] counts 		= new int[n];
+		Element[] elements 	= new Element[n];
+		int ie = 0;
+		
+		ElementComposition dictBuild = null;
 		
 		for (int i = 0; i < n; i++) {
 			String eStr = elementStrs[i].trim();
 			if (eStr.matches("(\\d*[a-zA-Z]+)\\((-?\\d+)\\)")) {
 				String[] x = eStr.split("\\(");
 				Element e = Element.fromString(x[0]);
-				if (e == null)
-					throw new IllegalArgumentException("Unknown element '"+e+"'");
-				
 				int count = Integer.parseInt(x[1].substring(0, x[1].length() - 1));
-				elements[i] = e;
-				counts[i] = count;
-			} else if (eStr.matches("[a-zA-Z]+")) {
+				
+				if (e != null) {
+					elements[ie] = e;
+					counts[ie] = count;
+					ie++;
+				} else if (dict != null && dict.containsKey(x[0])) {
+					if (dictBuild == null) 
+						dictBuild = dict.get(x[0]).multiply(count);
+					else
+						dictBuild = dictBuild.join(dict.get(x[0]).multiply(count));
+				} else
+					throw new IllegalArgumentException("Unknown counted element '"+x[0]+"'");
+				
+			} else if (dict != null && dict.containsKey(eStr)) {
+				if (dictBuild == null) 
+					dictBuild = dict.get(eStr);
+				else
+					dictBuild = dictBuild.join(dict.get(eStr));
+			} else if (eStr.matches("\\d*[a-zA-Z]+")) {
 				Element e = Element.fromString(eStr);
 				if (e == null)
-					throw new IllegalArgumentException("Unknown element '"+e+"'");
-				elements[i] = e;
-				counts[i] = 1;
+					throw new IllegalArgumentException("Unknown single element '"+eStr+"'");
+				elements[ie] = e;
+				counts[ie] = 1;
+				ie++;
 			} else
 				throw new IllegalArgumentException("Element '"+eStr+"' not parsable");
 			
-			
 		}
 		
-		return new Molecule(elements, counts);
+		if (dictBuild == null)
+			return new Molecule(take(ie, elements), take(ie, counts));
+		else
+			return new Molecule(dictBuild.join(new ElementComposition(take(ie, elements), take(ie, counts))));
+	}
+
+	private static int[] take(int n, int[] in) {
+		int[] out = new int[n];
+		System.arraycopy(in, 0, out, 0, n);
+		return out;
+	}
+	private static Element[] take(int n, Element[] in) {
+		Element[] out = new Element[n];
+		System.arraycopy(in, 0, out, 0, n);
+		return out;
 	}
 	
 	

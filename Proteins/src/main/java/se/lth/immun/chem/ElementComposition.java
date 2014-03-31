@@ -44,6 +44,14 @@ public class ElementComposition {
 		return new ElementComposition(eret, cret);
 	}
 	
+	public ElementComposition multiply(int times) {
+		int[] cret = new int[counts.length];
+		for (int i = 0; i < counts.length; i++) {
+			cret[i] = counts[i] * times;
+		}
+		return new ElementComposition(elements, cret);
+	}
+	
 	
 	
 	public static ElementComposition join(
