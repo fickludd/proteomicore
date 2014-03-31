@@ -1,8 +1,14 @@
 package se.lth.immun.unimod;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import se.lth.immun.chem.Element;
 import se.lth.immun.chem.ElementComposition;
 import se.lth.immun.chem.Modifier;
 import se.lth.immun.chem.IMolecule;
+import se.lth.immun.chem.Molecule;
+import se.lth.immun.chem.Constants;
 
 public enum UniModEntry {
 	
@@ -38,9 +44,9 @@ public enum UniModEntry {
 	tri_Methylation ( "unimod", 42.0797, "Trimethyl", 42.046950, 37, "tri-Methylation", "tri-Methylation", 1, "2011-02-03 10:02:45", "2002-08-19 19:17:11", "H(6) C(3)", "admin" ),
 	b_methylthiol ( "unimod", 46.0916, "Methylthio", 45.987721, 39, "Beta-methylthiolation", "b-methylthiol", 0, "2011-11-24 16:48:21", "2002-08-19 19:17:11", "H(2) C S", "admin" ),
 	Sulfation ( "unimod", 80.0632, "Sulfo", 79.956815, 40, "O-Sulfonation", "Sulfation", 1, "2012-02-14 17:50:32", "2002-08-19 19:17:11", "O(3) S", "admin" ),
-	Hex ( "unimod", 162.1406, "Hex", 162.052824, 41, "Hexose", "Hex", 1, "2011-11-21 13:57:35", "2002-08-19 19:17:11", "Hex", "admin" ),
+	Hex ( "unimod", 162.1406, "Hex", 162.052824, 41, "Hexose", "Hex", 1, "2011-11-21 13:57:35", "2002-08-19 19:17:11", "H(12) C(6) O(6)", "admin" ),
 	Lipoyl ( "unimod", 188.3103, "Lipoyl", 188.032956, 42, "Lipoyl", "Lipoyl", 1, "2006-10-16 15:06:53", "2002-08-19 19:17:11", "H(12) C(8) O S(2)", "admin" ),
-	HexNAc ( "unimod", 203.1925, "HexNAc", 203.079373, 43, "N-Acetylhexosamine", "HexNAc", 1, "2006-10-16 15:10:27", "2002-08-19 19:17:11", "HexNAc", "admin" ),
+	HexNAc ( "unimod", 203.1925, "HexNAc", 203.079373, 43, "N-Acetylhexosamine", "HexNAc", 1, "2006-10-16 15:10:27", "2002-08-19 19:17:11", "H(15) C(8) O(6) N(1)", "admin" ),
 	Farnesylation ( "unimod", 204.3511, "Farnesyl", 204.187801, 44, "Farnesylation", "Farnesylation", 1, "2006-10-16 15:11:38", "2002-08-19 19:17:11", "H(24) C(15)", "admin" ),
 	Myristoylation ( "unimod", 210.3556, "Myristoyl", 210.198366, 45, "Myristoylation", "Myristoylation", 1, "2006-10-16 15:13:17", "2002-08-19 19:17:11", "H(26) C(14) O", "admin" ),
 	Pyridoxal_phos ( "unimod", 229.1266, "PyridoxalPhosphate", 229.014009, 46, "Pyridoxal phosphate", "Pyridoxal-phos", 1, "2006-10-16 15:35:42", "2002-08-19 19:17:11", "H(8) C(8) N O(5) P", "admin" ),
@@ -1031,7 +1037,72 @@ public enum UniModEntry {
 		this.dateTimePosted = dateTimePosted;
 		this.recordId = recordId;
 		
-		this.modification = Modifier.parseMolecule(composition);
+		
+
+		
+		/**
+		 * These glycan compositions were taken from 
+		 * http://www.ionsource.com/Card/carbo/slmmarker.htm
+		 */
+		
+		HashMap<String, ElementComposition> compositionDict = new HashMap<String, ElementComposition>();
+		compositionDict.put("Pent", new ElementComposition(
+				eArr(Element.C, Element.O, Element.H), 
+				cArr(5, 5, 10)));
+
+		compositionDict.put("Hex", new ElementComposition(
+				eArr(Element.C, Element.O, Element.H), 
+				cArr(6, 6, 12)));
+
+		compositionDict.put("Hep", new ElementComposition(
+				eArr(Element.C, Element.O, Element.H), 
+				cArr(7, 7, 14)));
+
+		compositionDict.put("dHex", new ElementComposition(
+				eArr(Element.C, Element.O, Element.H), 
+				cArr(6, 5, 12)));
+
+		compositionDict.put("HexNAc", new ElementComposition(
+				eArr(Element.C, Element.O, Element.N, Element.H), 
+				cArr(8, 6, 1, 15)));
+
+		compositionDict.put("NeuAc", new ElementComposition(
+				eArr(Element.C, Element.O, Element.N, Element.H), 
+				cArr(11, 9, 1, 19)));
+
+		compositionDict.put("NeuGc", new ElementComposition(
+				eArr(Element.C, Element.O, Element.N, Element.H), 
+				cArr(11, 10, 1, 19)));
+
+		compositionDict.put("Hex-HexNAc", new ElementComposition(
+				eArr(Element.C, Element.O, Element.N, Element.H), 
+				cArr(14, 11, 1, 25)));
+
+		compositionDict.put("Hex3HexNAc2", new ElementComposition(
+				eArr(Element.C, Element.O, Element.N, Element.H), 
+				cArr(46, 35, 2, 76)));
+		
+		
+		try {
+			IMolecule molecule = Modifier.parseMolecule(composition, compositionDict);
+			
+			double mass = molecule.monoisotopicMass();
+			
+			ElementComposition lessWater = molecule.getComposition();
+			ElementComposition waterLoss = Constants.WATER.getComposition().multiply(-1);
+			while (Math.abs(mass - monoMass) > 0.001 && mass > monoMass) {
+				lessWater = lessWater.join(waterLoss);
+				mass = lessWater.monoisotopicMass();
+			}
+			
+			if (Math.abs(mass - monoMass) > 0.001)
+				throw new RuntimeException("UniMod modification mass not correctly calculated! got '"+molecule.monoisotopicMass()+
+						"' expected '"+monoMass+"' for composition '"+composition+"'");
+			
+			this.modification = new Molecule(lessWater);
+		} catch (Exception e) {
+			throw new RuntimeException("initiation failed for composition '"+composition+"'", e);
+		}
 	}
 	
 	public static UniModEntry fromUniModAcc(int acc) {
@@ -1039,5 +1110,13 @@ public enum UniModEntry {
 			if (e.recordId == acc)
 				return e;
 		return null;
+	}
+	
+	private static Element[] eArr(Element... es) {
+		return es;
+	}
+	
+	private static int[] cArr(int... cs) {
+		return cs;
 	}
 }
