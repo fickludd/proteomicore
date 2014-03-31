@@ -8,7 +8,7 @@ import se.lth.immun.chem.ModifiedAminoAcid;
 public class UniMod {
 
 	
-	public static Peptide parseUniModeSequence(String seq) {
+	public static Peptide parseUniModSequence(String seq) {
 		IAminoAcid[] aas = new IAminoAcid[seq.length()];
 		int is = 0;
 		int iaa = 0;

@@ -1,7 +1,6 @@
 package se.lth.immun.unimod;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import se.lth.immun.chem.Element;
 import se.lth.immun.chem.ElementComposition;
