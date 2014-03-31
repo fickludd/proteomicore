@@ -105,17 +105,25 @@ public class Modifier {
 		
 		for (int i = 0; i < n; i++) {
 			String eStr = elementStrs[i].trim();
-			if (!eStr.matches("(\\d*[a-zA-Z]+)\\((-?\\d+)\\)"))
+			if (eStr.matches("(\\d*[a-zA-Z]+)\\((-?\\d+)\\)")) {
+				String[] x = eStr.split("\\(");
+				Element e = Element.fromString(x[0]);
+				if (e == null)
+					throw new IllegalArgumentException("Unknown element '"+e+"'");
+				
+				int count = Integer.parseInt(x[1].substring(0, x[1].length() - 1));
+				elements[i] = e;
+				counts[i] = count;
+			} else if (eStr.matches("[a-zA-Z]+")) {
+				Element e = Element.fromString(eStr);
+				if (e == null)
+					throw new IllegalArgumentException("Unknown element '"+e+"'");
+				elements[i] = e;
+				counts[i] = 1;
+			} else
 				throw new IllegalArgumentException("Element '"+eStr+"' not parsable");
 			
-			String[] x = eStr.split("\\(");
-			Element e = Element.fromString(x[0]);
-			if (e == null)
-				throw new IllegalArgumentException("Unknown element '"+e+"'");
 			
-			int count = Integer.parseInt(x[1].substring(0, x[1].length() - 1));
-			elements[i] = e;
-			counts[i] = count;
 		}
 		
 		return new Molecule(elements, counts);
