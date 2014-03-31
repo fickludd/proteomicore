@@ -3,14 +3,15 @@ package se.lth.immun.chem;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
 public class ElementComposition {
 
 	Element[] 			elements;
 	int[] 				counts;
 	IsotopeDistribution dist;
-	
+
+	public Element[] getElements() { return elements; }
+	public int[] getCounts() { return counts; }
+
 	public ElementComposition(Element[] elements, int[] counts) {
 		this.elements = elements;
 		this.counts = counts;

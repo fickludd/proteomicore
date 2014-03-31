@@ -124,14 +124,14 @@ public enum Element {
 	Uus ("Uus", 117, 292.000000f, new float[]{292.20755f}, new float[]{0.0f}, new int[]{292}),
 	Uuo ("Uuo", 118, 294.000000f, new float[]{0.0f}, new float[]{0.0f}, new int[]{294});
 
-	final String	symbol;
-	final int 		atomicNumber;
-	final float	standardAtomicWeight;
-	final float[]	isotopeRelativeAtomicMasses;
-	final float[]	isotopeOccurence;
-	final int[]	isotopeMassNumbers;
-	final float 	monoisotopicWeight;
-	final IsotopeDistribution isotopeDistribution;
+	public final String	symbol;
+	public final int 		atomicNumber;
+	public final float	standardAtomicWeight;
+	public final float[]	isotopeRelativeAtomicMasses;
+	public final float[]	isotopeOccurence;
+	public final int[]	isotopeMassNumbers;
+	public final float 	monoisotopicWeight;
+	public final IsotopeDistribution isotopeDistribution;
 	
 	Element(
 			String symbol, 
