@@ -16,6 +16,7 @@ import java.util.Properties
 import se.lth.immun.traml.ghost._
 
 import se.lth.immun.chem._
+import se.lth.immun.unimod.UniMod
 
 import collection.mutable.ArrayBuffer
 import collection.mutable.Queue
@@ -156,7 +157,7 @@ object DecoyTraMLGenerator extends CLIApplication {
     		var key 	= t._1
     		var ts 		= t._2
     		var inPep 	= inTraml.peptides(ts.head.peptideRef)
-    		var p 		= toPeptide(inPep)
+    		var p 		= UniMod.parseUniModSequence(inPep.sequence)
     		var ions 	= findIons(ts.map(_.q3), p)
     		try {
     			println("%8.3f %s | %s".format(key._1, p.toString, 
@@ -229,12 +230,6 @@ object DecoyTraMLGenerator extends CLIApplication {
 			}
 		})
 		return retFs
-	}
-	
-	
-	
-	def toPeptide(gp:GhostPeptide) = {
-		new Peptide(gp.sequence.map(c => StandardAminoAcid.fromChar(c)).toArray)
 	}
 	
 	
