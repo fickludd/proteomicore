@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 import se.lth.immun.chem.Element;
 import se.lth.immun.chem.ElementComposition;
+import se.lth.immun.chem.IsotopeDistribution;
 import se.lth.immun.chem.Modifier;
 import se.lth.immun.chem.IMolecule;
-import se.lth.immun.chem.Molecule;
 import se.lth.immun.chem.Constants;
 
 public enum UniModEntry {
@@ -1098,7 +1098,7 @@ public enum UniModEntry {
 				throw new RuntimeException("UniMod modification mass not correctly calculated! got '"+molecule.monoisotopicMass()+
 						"' expected '"+monoMass+"' for composition '"+composition+"'");
 			
-			this.modification = new Molecule(lessWater);
+			this.modification = new UniModMolecule(this, lessWater);
 		} catch (Exception e) {
 			throw new RuntimeException("initiation failed for composition '"+composition+"'", e);
 		}
@@ -1117,5 +1117,22 @@ public enum UniModEntry {
 	
 	private static int[] cArr(int... cs) {
 		return cs;
+	}
+	
+	private class UniModMolecule implements IMolecule {
+		UniModEntry e;
+		ElementComposition ec;
+		
+		public UniModMolecule(UniModEntry e, ElementComposition ec) {
+			this.e = e;
+			this.ec = ec;
+		}
+		
+		public ElementComposition getComposition() { return ec; }
+		public double monoisotopicMass() { return ec.monoisotopicMass(); }
+		public IsotopeDistribution getIsotopeDistribution() { return ec.getIsotopeDistribution(); }
+		public String toString() {
+			return "UniMod:"+e.recordId;
+		}
 	}
 }
