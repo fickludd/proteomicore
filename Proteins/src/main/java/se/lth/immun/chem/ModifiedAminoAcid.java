@@ -30,6 +30,6 @@ public class ModifiedAminoAcid implements IAminoAcid {
 	
 	@Override
 	public String toString() {
-		return String.format("%s[%.3f]", aa.toString(), modification.monoisotopicMass());
+		return aa.toString() + "(" + modification.toString() + ")";
 	}
 }
