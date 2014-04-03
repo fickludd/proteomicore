@@ -52,7 +52,7 @@ trait CLIApplication {
 	opt(
 			"help",
 			"print usage and quit", 
-			s => error("")
+			s => error("", null)
 		)
 	opt(
 			"log-dir", 
@@ -114,17 +114,17 @@ trait CLIApplication {
 					case Some(opt) => {
 						if (opt.valuePlaceHolder != null)
 							if (t.length != 2)
-								error("Error parsing '"+t(0)+"'. "+opt.name + " option need value of type "+opt.valuePlaceHolder)
+								error("Error parsing '"+t(0)+"'. "+opt.name + " option need value of type "+opt.valuePlaceHolder, null)
 							else
 								opt.handle(t(1))
 						else
 							opt.handle(null)
 					}
-					case None => error("Error parsing '"+t(0)+"'. Option does not exist.")
+					case None => error("Error parsing '"+t(0)+"'. Option does not exist.", null)
 				}
 			}
 			if (_args.length > argList.length)
-				error("Not enough arguments!")
+				error("Not enough arguments!", null)
 				
 			for (a <- 0 until _args.length) {
 				var al = argList(a)
@@ -138,7 +138,7 @@ trait CLIApplication {
 						 _rest.handle(argList.drop(_args.length).toArray)
 				} else {
 					if (argList.length > _args.length + _optionalArgs.length)
-						error("Too many arguments provided!")
+						error("Too many arguments provided!", null)
 					if (_optionalArgs.length > 0)
 						for (a <- _args.length until argList.length)
 							parseArg(argList(a), _optionalArgs(a - _args.length))
@@ -160,18 +160,18 @@ trait CLIApplication {
 		} catch {
 			case e:Exception => {
 				log.write(e)
-				error("Error parsing '"+value+"' as <"+arg.valuePlaceHolder+">")
+				error("Error parsing '"+value+"' as <"+arg.valuePlaceHolder+">", e)
 			}
 		}
 	}
 	
 	
 	
-	def error(mess:String):Unit = {
+	def error(mess:String, e:Exception):Unit = {
 		println(mess)
 		log.write(mess)
 		printUsage
-		throw new CommandlineArgumentException(mess)
+		throw new CommandlineArgumentException(mess, e)
 	}
 	
 	
