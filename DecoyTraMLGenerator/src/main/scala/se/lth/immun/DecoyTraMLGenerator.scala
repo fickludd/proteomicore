@@ -245,10 +245,18 @@ object DecoyTraMLGenerator extends CLIApplication {
 	
 	
 	
-	def shuffle(p:Peptide) = {
-		var shuffled = Random.shuffle(p.aminoAcids.dropRight(1).toBuffer)
-		shuffled += p.aminoAcids.last
-		new Peptide(shuffled.toArray)
+	def shuffle(p:Peptide):Peptide = {
+		var shuffled =
+			p.aminoAcids.head match {
+				case saa:StandardAminoAcid =>
+					Random.shuffle(p.aminoAcids.dropRight(1).toList) :+ p.aminoAcids.last
+				case aa:IAminoAcid =>
+					p.aminoAcids.head +: Random.shuffle(p.aminoAcids.dropRight(1).drop(1).toList) :+ p.aminoAcids.last
+			}
+		if (shuffled.zip(p.aminoAcids).forall(t => t._1 == t._2))
+			shuffle(p)
+		else
+			new Peptide(shuffled.toArray)
 	}
 	
 	/**
@@ -291,7 +299,7 @@ object DecoyTraMLGenerator extends CLIApplication {
 				if (r < cumsum)
 					return aa
 			}
-			return aaFreq.last._1//throw new Exception("This definitely shouldn't happed!")
+			return aaFreq.last._1//throw new Exception("This definitely shouldn't happen!")
 		}
 		
 		val m = p.monoisotopicMass
