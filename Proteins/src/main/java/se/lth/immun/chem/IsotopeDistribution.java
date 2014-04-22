@@ -8,17 +8,17 @@ package se.lth.immun.chem;
  */
 public class IsotopeDistribution {
 
-	public static float PRUNE_LEVEL = 0.000001f;
+	public static double PRUNE_LEVEL = 0.000001;
 	
 	public int m0 = 0;
 	public int dm = 1;
-	public float[] intensities = {1.0f};
+	public double[] intensities = {1.0};
 	
 	public IsotopeDistribution() {}
 	
 	public void add(IsotopeDistribution x) {
 		m0 += x.m0;
-		float[] ni 	= new float[dm + x.dm - 1];
+		double[] ni 	= new double[dm + x.dm - 1];
 		for (int i = 0; i < dm; i++)
 			for (int j = 0; j < x.dm; j++) {
 				ni[i + j] += intensities[i] * x.intensities[j];
@@ -34,7 +34,7 @@ public class IsotopeDistribution {
 		IsotopeDistribution i = new IsotopeDistribution();
 		i.m0 = m0;
 		i.dm = dm;
-		i.intensities = new float[intensities.length];
+		i.intensities = new double[intensities.length];
 		for (int j = 0; j < intensities.length; j++)
 			i.intensities[j] = intensities[j];
 		return i;

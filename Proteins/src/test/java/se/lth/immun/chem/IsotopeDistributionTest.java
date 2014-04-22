@@ -12,9 +12,9 @@ public class IsotopeDistributionTest {
 
 		assertEquals(12, i.m0);
 		assertEquals(3, i.dm);
-		assertEquals(i.intensities[0], 0.9893f, Float.MIN_VALUE);
-		assertEquals(i.intensities[1], 0.0107f, Float.MIN_VALUE);
-		assertEquals(i.intensities[2], 0.0f, Float.MIN_VALUE);
+		assertEquals(0.9893, i.intensities[0], Double.MIN_VALUE);
+		assertEquals(0.0107, i.intensities[1], Double.MIN_VALUE);
+		assertEquals(0.0, i.intensities[2], Double.MIN_VALUE);
 	}
 	
 
@@ -83,16 +83,16 @@ public class IsotopeDistributionTest {
 				StandardAminoAcid.L};
 		Peptide p = new Peptide(aa);
 		IsotopeDistribution i = p.getIsotopeDistribution();
-		
+				
 		assertEquals(991, i.m0, 0.00001);
-		assertEquals(i.intensities[0], 0.5712693f, 0.0000001);
-		assertEquals(i.intensities[1], 0.27640688f, 0.0000001);
-		assertEquals(i.intensities[2], 0.111020625f, 0.0000001);
-		assertEquals(i.intensities[3], 0.031946667f, 0.0000001);
-		assertEquals(i.intensities[4], 0.0075488477f, 0.0000001);
-		assertEquals(i.intensities[5], 0.0014957594f, 0.0000001);
-		assertEquals(i.intensities[6], 2.5694395E-4f, 0.0000001);
-		assertEquals(i.intensities[7], 3.895941E-5f, 0.0000001);
-		assertEquals(i.intensities[8], 3.9448983E-6f, 0.0000001);
+		assertEquals(0.5712685151670263, i.intensities[0],0.0000001);
+		assertEquals(0.27640646881744513, i.intensities[1], 0.0000001);
+		assertEquals(0.11102047603942766, i.intensities[2], 0.0000001);
+		assertEquals(0.031946667, i.intensities[3], 0.0000001);
+		assertEquals(0.0075488477, i.intensities[4],  0.0000001);
+		assertEquals(0.0014957594, i.intensities[5], 0.0000001);
+		assertEquals(2.5694395E-4, i.intensities[6], 0.0000001);
+		assertEquals(3.895941E-5, i.intensities[7], 0.0000001);
+		assertEquals(3.9448983E-6, i.intensities[8], 0.0000001);
 	}
 }

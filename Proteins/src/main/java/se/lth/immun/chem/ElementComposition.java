@@ -20,7 +20,7 @@ public class ElementComposition {
 	public double monoisotopicMass() {
 		double x = 0.0;
 		for (int i = 0; i < elements.length; i++)
-			x += elements[i].monoisotopicWeight * counts[i];
+			x += ((double)elements[i].monoisotopicWeight) * counts[i];
 		return x;
 	}
 	
