@@ -1,7 +1,7 @@
 package se.lth.immun
 
-import jt.io.JTApplication
-import jt.io.CommandlineArgumentException
+import se.lth.immun.app.CLIApplication
+import se.lth.immun.app.CommandlineArgumentException
 
 object EsvCLI {
 

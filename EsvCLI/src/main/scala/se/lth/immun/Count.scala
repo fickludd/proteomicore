@@ -1,7 +1,7 @@
 package se.lth.immun
 
-import jt.io.JTApplication
-import jt.io.CommandlineArgumentException
+import se.lth.immun.app.CLIApplication
+import se.lth.immun.app.CommandlineArgumentException
 import java.io.File
 import java.io.IOException
 import java.io.FileReader
@@ -13,7 +13,7 @@ import se.lth.immun.esv._
 import collection.mutable.ArrayBuffer
 import collection.mutable.HashMap
 
-object Count extends Command with JTApplication {
+object Count extends Command with CLIApplication {
 	
 	val str = "count"
 		
@@ -41,11 +41,11 @@ object Count extends Command with JTApplication {
     		parseArgs("esv count", args) 
     	} catch {
     		case cae:CommandlineArgumentException => {
-    			JTApplication.log.write(cae)
+    			CLIApplication.log.write(cae)
     			System.exit(1)
     		}
     		case e:Exception => {
-    			JTApplication.log.write(e)
+    			CLIApplication.log.write(e)
     			System.exit(2)
     		}
     	}

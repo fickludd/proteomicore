@@ -1,7 +1,7 @@
 package se.lth.immun
 
-import jt.io.JTApplication
-import jt.io.CommandlineArgumentException
+import se.lth.immun.app.CLIApplication
+import se.lth.immun.app.CommandlineArgumentException
 import java.io.File
 import java.io.IOException
 import java.io.FileReader
@@ -12,7 +12,7 @@ import java.io.BufferedWriter
 import se.lth.immun.esv._
 import collection.mutable.ArrayBuffer
 
-object Join extends Command with JTApplication {
+object Join extends Command with CLIApplication {
 
 	class F(
 		val str:String,
@@ -64,11 +64,11 @@ object Join extends Command with JTApplication {
     		parseArgs("esv join", args) 
     	} catch {
     		case cae:CommandlineArgumentException => {
-    			JTApplication.log.write(cae)
+    			CLIApplication.log.write(cae)
     			System.exit(1)
     		}
     		case e:Exception => {
-    			JTApplication.log.write(e)
+    			CLIApplication.log.write(e)
     			System.exit(2)
     		}
     	}
