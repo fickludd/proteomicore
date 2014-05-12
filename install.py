@@ -37,6 +37,7 @@ if cmd == "install" or cmd == "clean" or cmd == "test":
 	mvn("SalvatorDenoise")
 	mvn("TraML")
 	mvn("DecoyTraMLGenerator")
+	mvn("Csv2Traml")
 else:
 	print "unknown mvn command '%s'" % cmd
 	exit(1)
