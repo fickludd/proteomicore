@@ -130,6 +130,22 @@ public class Peptide implements IMolecule {
 		return _dist;
 	}
 	
+	
+
+	public static final Element[] AVERAGINE_ELEMENTS = {Element.C, Element.H, Element.O, Element.N, Element.S};
+	public static final double[] AVERAGINE_OCCURENCE = {4.9384, 7.7583, 1.4773, 1.3577, 0.0417}; 
+	public static final double AVERAGINE_MASS = 111.1254;
+	
+	public static ElementComposition averagine(double mass) {
+		double n = mass / AVERAGINE_MASS;
+		int[] counts = new int[5];
+		for (int i = 0; i<5; i++)
+			counts[i] = (int)Math.round(AVERAGINE_OCCURENCE[i] * n);
+		return new ElementComposition(AVERAGINE_ELEMENTS, counts);
+	}
+	
+	
+	
 	/**
 	 * These seem roughly ok when visually compared to expasy tool IsotopIdent
 	 * http://education.expasy.org/student_projects/isotopident/htdocs/
