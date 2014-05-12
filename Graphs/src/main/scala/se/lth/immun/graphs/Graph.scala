@@ -60,6 +60,8 @@ abstract class Graph[X, Y](
 	def rightMouseButton(me:MouseEvent):Boolean = me.peer.getButton == java.awt.event.MouseEvent.BUTTON3
 	
 	var mouseZoom = true
+	var dragMods:Key.Modifiers = _
+	var zoomMods:Key.Modifiers = 1024 //Magic number for no mods
 	var start:Option[X] = None
 	var end:Option[X] = None
 	var selection:Option[Interval[X]] = None
@@ -67,6 +69,7 @@ abstract class Graph[X, Y](
 	listenTo(mouse.moves)
 	reactions += {
 		case mp:MousePressed => if (leftMouseButton(mp)) {
+			dragMods = mp.modifiers
 			start = Some(renderer.px2x(mp.point.x))
 			repaint
 		}
@@ -78,13 +81,13 @@ abstract class Graph[X, Y](
 			end match {
 				case Some(endX) => {
 					var dx = xAxis.x2gx(endX) - xAxis.x2gx(start.get)
-					if (math.abs(dx) > 0.02	&& mouseZoom) {
+					if (math.abs(dx) > 0.02	&& mouseZoom && dragMods == zoomMods) {
 						setZoom(start.get, endX)
 						selection = None
 						publish(new ZoomChanged[X](start.get, endX, this))
 					} else {
 						selection = Some(new Interval[X](start.get, endX))
-						publish(new SelectedNewInterval[X](start.get, endX, this))
+						publish(new SelectedNewInterval[X](start.get, endX, this, dragMods))
 					}
 					start = None
 					end = None
