@@ -73,6 +73,7 @@ object GhostTransition {
 					case LOCAL_RETENTION_TIME_ACC 		=> rt1 = cv.value.get.toDouble
 					case RT_WINDOW_LOWER_OFFSET_ACC 	=> rt0 = cv.value.get.toDouble
 					case RT_WINDOW_UPPER_OFFSET_ACC 	=> rt2 = cv.value.get.toDouble
+					case IRT_NORM_STANDARD_ACC			=> x.irt = cv.value.get.toDouble
 					case _ => {}
 				}
 		x.rtStart 		= rt1 - rt0
@@ -99,6 +100,7 @@ class GhostTransition {
 	var instrumentRef:String = null
 	var rtStart:Double = Double.NaN
 	var rtEnd:Double = Double.NaN
+	var irt:Double = Double.NaN
 	var intensity:Double = -1
 	var transition:Transition = null
 	var id:String = null
@@ -157,8 +159,11 @@ class GhostTransition {
 		t.product.interpretations.clear
 		for (ion <- ions) t.product.interpretations += interp(ion)
 		
-		if (!java.lang.Double.isNaN(rtStart) && !java.lang.Double.isNaN(rtEnd))
+		if ((!java.lang.Double.isNaN(rtStart) && !java.lang.Double.isNaN(rtEnd)) ||
+				!java.lang.Double.isNaN(irt))
 			t.retentionTime = Some(rt)
+		
+			
 		
 		
 		if (peptideRef != null) t.peptideRef = Some(peptideRef)
@@ -243,29 +248,40 @@ class GhostTransition {
 	def rt = {
 		var x = new RetentionTime
 		
-		var mid = (rtEnd + rtStart)/2
-		var offset = rtEnd - mid
+		if (!java.lang.Double.isNaN(rtStart) && !java.lang.Double.isNaN(rtEnd)) {
+			var mid = (rtEnd + rtStart)/2
+			var offset = rtEnd - mid
+			
+			var cv = new CvParam
+			cv.cvRef = "MS"
+			cv.accession = LOCAL_RETENTION_TIME_ACC
+			cv.name = "local retention time"
+			cv.value = Some(mid.toString)
+			x.cvParams += cv
+			
+			cv = new CvParam
+			cv.cvRef = "MS"
+			cv.accession = RT_WINDOW_LOWER_OFFSET_ACC
+			cv.name = "retention time window lower offset"
+			cv.value = Some(offset.toString)
+			x.cvParams += cv
+			
+			cv = new CvParam
+			cv.cvRef = "MS"
+			cv.accession = RT_WINDOW_UPPER_OFFSET_ACC
+			cv.name = "retention time window upper offset"
+			cv.value = Some(offset.toString)
+			x.cvParams += cv
+		}
 		
-		var cv = new CvParam
-		cv.cvRef = "MS"
-		cv.accession = LOCAL_RETENTION_TIME_ACC
-		cv.name = "local retention time"
-		cv.value = Some(mid.toString)
-		x.cvParams += cv
-		
-		cv = new CvParam
-		cv.cvRef = "MS"
-		cv.accession = RT_WINDOW_LOWER_OFFSET_ACC
-		cv.name = "retention time window lower offset"
-		cv.value = Some(offset.toString)
-		x.cvParams += cv
-		
-		cv = new CvParam
-		cv.cvRef = "MS"
-		cv.accession = RT_WINDOW_UPPER_OFFSET_ACC
-		cv.name = "retention time window upper offset"
-		cv.value = Some(offset.toString)
-		x.cvParams += cv
+		if (!java.lang.Double.isNaN(irt)) {
+			val cv = new CvParam
+			cv.cvRef = "MS"
+			cv.accession = IRT_NORM_STANDARD_ACC
+			cv.name = "iRT retention time normalization standard"
+			cv.value = Some(irt.toString)
+			x.cvParams += cv
+		}
 		
 		x
 	}

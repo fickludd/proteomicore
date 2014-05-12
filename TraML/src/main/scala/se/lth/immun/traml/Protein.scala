@@ -48,9 +48,11 @@ class Protein {
 		
 		cvParams.foreach(x => x.write(w))
 		userParams.foreach(x => x.write(w))
-		w.startElement(PROTEIN_SEQUENCE)
-		w.text(sequence)
-		w.endElement
+		if (sequence != null) {
+			w.startElement(PROTEIN_SEQUENCE)
+			w.text(sequence)
+			w.endElement
+		}
 		w.endElement
 	}
 }

@@ -21,12 +21,20 @@ object GhostPeptide {
 		
 		for (cv <- p.cvParams)
 			cv.accession match {
-				case HEAVY_LABELLED_PEPTIDE_ACC => x.heavyLabelled = true
+				case HEAVY_LABELLED_PEPTIDE_ACC => x.label = "heavy"
 				case CHARGE_STATE_ACC => 
 					if (cv.value.isDefined) 
 						x.charge = Some(cv.value.get.toInt)
 				case _ => {}
 			}
+		
+		for (up <- p.userParams.find(_.name == "label")) {
+			x.label = up.value.get
+		}
+		
+		for (cv <- p.cvParams.find(_.accession == PEPTIDE_GROUP_LABEL)) {
+			x.labelGroup = cv.value.get
+		}
 		
 		for (u <- p.userParams)
 			u.name match {
@@ -44,7 +52,8 @@ object GhostPeptide {
 class GhostPeptide {
 	var id:String 				= null
 	var sequence:String 		= null
-	var heavyLabelled:Boolean 	= false
+	var label:String = ""
+	var labelGroup:String = ""
 	var proteins 				= new ArrayBuffer[String]
 	var charge:Option[Int]		= None
 	var fullPeptideName:Option[String] = None
@@ -56,8 +65,18 @@ class GhostPeptide {
 		var p = new Peptide
 		p.id = id
 		p.sequence = sequence
-		if (heavyLabelled)
-			p.cvParams += heavyParam
+		if (label != null && label != "")
+			p.userParams.find(_.name == "label") match {
+				case Some(up) => up.value = Some(label)
+				case None => p.userParams += labelParam
+			}
+			
+		
+		if (labelGroup != null && labelGroup != "")
+			p.cvParams.find(_.accession == PEPTIDE_GROUP_LABEL) match {
+				case Some(cv) => cv.value = Some(labelGroup)
+				case None => p.cvParams += labelGroupParam
+			}
 		
 		if (charge.isDefined)
 			p.cvParams += chargeParam
@@ -76,13 +95,25 @@ class GhostPeptide {
 	}
 	
 	
-	def heavyParam = {
+	
+	def labelParam = {
+		var u = new UserParam
+		u.name = "label"
+		u.dataType = Some("xs:string")
+		u.value = Some(label)
+		u
+	}
+	
+	
+	def labelGroupParam = {
 		var cv = new CvParam
 		cv.cvRef = "MS"
-		cv.accession = HEAVY_LABELLED_PEPTIDE_ACC
-		cv.name = "heavy labeled peptide"
+		cv.accession = PEPTIDE_GROUP_LABEL
+		cv.name = "peptide group label"
+		cv.value = Some(labelGroup)
 		cv
 	}
+	
 	def chargeParam = {
 		var cv = new CvParam
 		cv.cvRef = "MS"
