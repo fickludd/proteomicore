@@ -65,7 +65,7 @@ class XChromatogramGroup(
 	
 	
 	
-	def resample():XChromatogramGroup = {
+	def resample(times:Seq[Double] = Nil):XChromatogramGroup = {
 		if (chromatograms.forall(_.times.length == 0))
 			return new XChromatogramGroup(q1, 
 					chromatograms.map(c => new XChromatogram(
@@ -76,22 +76,26 @@ class XChromatogramGroup(
 												Array(0.0, 0.5, 1.0)
 											)))
 		
-		val t0 = chromatograms.filter(_.times.length > 0).map(_.times(0))
-		val tn = chromatograms.filter(_.times.length > 0).map(_.times.last)
-	    
-		val diffs = chromatograms(0).times.zip(chromatograms(0).times.tail).map(t => t._2 - t._1)
-	    val dt = diffs.sum / diffs.length
-	    
-	    val t0Min = t0.min
-	    val tnMax = tn.max
-	    
-	    val length = ((tnMax - t0Min) / dt).toInt
-	    val times = new ArrayBuffer[Double]
-	    var t = t0Min
-	    while (t < tnMax) {
-	    	times += t
-	    	t += dt
-	    }
+		val ts = 
+			if (times.isEmpty) {
+				val t0 = chromatograms.filter(_.times.length > 0).map(_.times(0))
+				val tn = chromatograms.filter(_.times.length > 0).map(_.times.last)
+			    
+				val diffs = chromatograms(0).times.zip(chromatograms(0).times.tail).map(t => t._2 - t._1)
+			    val dt = diffs.sum / diffs.length
+			    
+			    val t0Min = t0.min
+			    val tnMax = tn.max
+			    
+			    val length = ((tnMax - t0Min) / dt).toInt
+			    val ts = new ArrayBuffer[Double]
+			    var t = t0Min
+			    while (t < tnMax) {
+			    	ts += t
+			    	t += dt
+			    }
+				ts
+			} else times
 		
 		val ret = new XChromatogramGroup(q1)
         for (c <- chromatograms) {
@@ -99,8 +103,8 @@ class XChromatogramGroup(
     								c.q1, 
     								c.q3,
     								c.ce,
-    								resampleArray(c.times, c.intensities, times).toArray, 
-    								times.toArray 
+    								resampleArray(c.times, c.intensities, ts).toArray, 
+    								ts.toArray 
     							)
         }
 		
