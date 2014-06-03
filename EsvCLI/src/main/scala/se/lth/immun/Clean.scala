@@ -124,7 +124,7 @@ object Clean extends Command with CLIApplication {
 				try {
 					litD = lit.toDouble
 				} catch {
-					case _ => litD = Double.NaN
+					case _:Throwable => litD = Double.NaN
 				}
 				f = new F(s, col, func)
 				return true

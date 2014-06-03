@@ -74,7 +74,7 @@ object Concat extends Command with CLIApplication {
 					try {
 						a += esv.getValue(h)
 					} catch {
-						case _ => a += ""
+						case _:Throwable => a += ""
 					}
 				out.write(a)
 				nOut += 1
