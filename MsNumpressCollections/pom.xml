@@ -30,6 +30,12 @@
       <version>2.0.M5</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+    	<groupId>ms.numpress</groupId>
+    	<artifactId>MsNumpress</artifactId>
+    	<version>0.1.17</version>
+    </dependency>
   </dependencies>
   
   <repositories>
