@@ -1,6 +1,7 @@
 package se.lth.immun.mzml.ghost
 
 class XChromatogram(
+		val id:String,
 		val q1:Double,
 		val q3:Double,
 		val ce:Double,

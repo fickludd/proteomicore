@@ -61,7 +61,7 @@ object GhostBinaryDataArray {
 			})
 		
 		if (encLength == 0 && b.extLength == 0 || dataType == Unknown())
-			return (DataDef(double, zlibCompression, numCompression, Unknown(), false), Array())
+			return (DataDef(double, zlibCompression, numCompression, dataType, false), Array())
 		
 		// if extern take bytes else Base64-parse bytes
 		// if zlibCompress, decompress

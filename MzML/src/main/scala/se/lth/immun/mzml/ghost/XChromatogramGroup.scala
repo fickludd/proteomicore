@@ -69,6 +69,7 @@ class XChromatogramGroup(
 		if (chromatograms.forall(_.times.length == 0))
 			return new XChromatogramGroup(q1, 
 					chromatograms.map(c => new XChromatogram(
+												c.id,
 												q1,
 												c.q3,
 												c.ce,
@@ -100,6 +101,7 @@ class XChromatogramGroup(
 		val ret = new XChromatogramGroup(q1)
         for (c <- chromatograms) {
 	        ret.chromatograms += new XChromatogram(
+	        						c.id,
     								c.q1, 
     								c.q3,
     								c.ce,

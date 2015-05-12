@@ -177,17 +177,21 @@ class GhostChromatogram(
 	
 	
 	
+	def getId = 
+			if (chromatogram.id != null) 	chromatogram.id 
+			else if (id != null) 			id
+			else "SRM SIC %.3f,%.3f".format(precursor, product)
+	
 	
 	def toXChromatogram = 
-		new XChromatogram(precursor, product, collisionEnergy, intensities, times)
+		new XChromatogram(getId, precursor, product, collisionEnergy, intensities, times)
 	
 	
 	
 	def toChromatogram(index:Int):Chromatogram = {
 		var c = new Chromatogram
 		
-		c.id 		= 	if (chromatogram.id != null) 	chromatogram.id 
-						else 	"SRM SIC %.3f,%.3f".format(precursor, product)
+		c.id 		= getId
 		c.index 	= index
 		c.defaultArrayLength = times.length
 		c.cvParams += new CvParam {
