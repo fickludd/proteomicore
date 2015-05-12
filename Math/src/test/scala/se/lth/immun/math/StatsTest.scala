@@ -1,7 +1,6 @@
 package se.lth.immun.math
 
 import org.scalatest.FunSuite
-import org.scalautils.Tolerance
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
@@ -13,7 +12,7 @@ import scala.util.Random
  */
 
 @RunWith(classOf[JUnitRunner])
-class StatsTest extends FunSuite with Tolerance {
+class StatsTest extends FunSuite {
 	
 	import Stats._
 	
