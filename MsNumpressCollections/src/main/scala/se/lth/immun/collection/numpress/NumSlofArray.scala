@@ -1,28 +1,27 @@
 package se.lth.immun.collection.numpress
 
-import collection.mutable.Builder
 import collection.mutable.Queue
+import collection.mutable.ArrayBuffer
 
 import ms.numpress.MSNumpress
 
 object NumSlofArray {
-	import MSNumpress._
+	import NumpressUtil._
 	import NumpressArray._
 	
 	class NumSlofIterator(
-			ba:ByteArray, 
+			arr:ArrayBuffer[Byte], 
 			readAHead:Int = 10
-	) extends NumpressIterator(ba, readAHead) {
-		val fixedPoint = decodeFixedPoint(ba.chunks.head.a)
+	) extends NumpressIterator(arr, readAHead) {
+		val fixedPoint:Double = decodeFixedPoint(arr)
 		byteIndex += 8
-		def hasNext:Boolean = 
-			queue.nonEmpty || hasBytes(2)
 		
 		def decompress = {
 			for (i <- 0 until readAHead) {
-				if (hasBytes(2)) {
-					val x:Int = (0xff & currByteAndMove) | ((0xff & currByteAndMove) << 8)
+				if (byteIndex+2 <= arr.length) {
+					val x:Int = (0xff & arr(byteIndex)) | ((0xff & arr(byteIndex+1)) << 8)
 					queue += math.exp((0xffff & x).toDouble / fixedPoint) - 1
+					byteIndex += 2
 				}
 			}
 		}
@@ -34,23 +33,19 @@ object NumSlofArray {
 
 class NumSlofArray(
 		fixedPoint:Double = 0.0,
-		readAHead:Int = 10,
-		chunkSize:Int = 1024
-) extends NumpressArray(fixedPoint, readAHead, chunkSize) {
+		readAHead:Int = 10
+) extends NumpressArray(fixedPoint, readAHead) {
 
-	import ByteArray.Chunk
 	import NumSlofArray._
-	import MSNumpress._
 	
 	def getIterator = new NumSlofIterator(ba, readAHead)
-	def optimalFixedPoint(xs:Seq[Double]) = optimalSlofFixedPoint(xs.toArray, xs.size)
+	def optimalFixedPoint(xs:Seq[Double]) = MSNumpress.optimalSlofFixedPoint(xs.toArray, xs.size)
 	def maxByteSize(nDoubles:Int) = nDoubles * 2
-	def compress(d:Double, c:Chunk):Int = {
+	def compress(d:Double):Unit = {
 		val x = (math.log(d+1) * fixedPoint + 0.5).toInt
-		c.a(c.i) 	= (0xff & x).toByte
-		c.a(c.i+1) 	= (x >> 8).toByte
-		2
+		ba += (0xff & x).toByte
+		ba += (x >> 8).toByte
 	}
 	
-	override def sizeHint(s:Int) = ba.byteSizeHint(8 + s*2)
+	override def sizeHint(s:Int) = ba.sizeHint(8 + s*2)
 }

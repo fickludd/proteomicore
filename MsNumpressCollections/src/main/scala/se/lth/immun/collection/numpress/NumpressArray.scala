@@ -4,10 +4,10 @@ import collection.mutable.Builder
 import collection.mutable.Queue
 
 import ms.numpress.MSNumpress
+import collection.mutable.ArrayBuffer
 
 object NumpressArray {
-	abstract class NumpressIterator(arr:ByteArray, readAHead:Int = 10) extends Iterator[Double] {
-		var chunkIndex = 0
+	abstract class NumpressIterator(bytes:ArrayBuffer[Byte], readAHead:Int = 10) extends Iterator[Double] {
 		var byteIndex = 0
 		val queue = new Queue[Double]
 		def next:Double = {
@@ -15,37 +15,21 @@ object NumpressArray {
 				decompress
 			queue.dequeue
 		}
-		protected def currByte = {
-			//println(chunkIndex + " " + byteIndex)
-			arr.chunks(chunkIndex).a(byteIndex)
-		}
-		protected def hasBytes(n:Int):Boolean = 
-			chunkIndex < arr.chunks.length &&
-			arr.chunks.drop(chunkIndex).map(_.i).sum - byteIndex >= n
-		protected def currByteAndMove:Byte = {
-			val b = currByte
-			byteIndex += 1
-			if (byteIndex == arr.chunks(chunkIndex).i) {
-				chunkIndex += 1
-				byteIndex = 0
-			}
-			b
-		}
-			
+		def hasNext = queue.nonEmpty || byteIndex < bytes.length	
 		protected def decompress:Unit
 	}
 }
 
 abstract class NumpressArray(
 		fixedPoint:Double = 0.0,
-		readAHead:Int = 10,
-		chunkSize:Int = 1024
+		readAHead:Int = 10
 ) extends Iterable[Double] with Builder[Double, Iterable[Double]] {
 
-	import MSNumpress._
+	//import MSNumpress._
 	import ByteArray.Chunk
+	import NumpressUtil._
 	
-	val ba = new ByteArray(chunkSize)
+	protected val ba = new ArrayBuffer[Byte]//ByteArray(chunkSize)
 	var initiated = false
 	val queue = new Queue[Double]
 	var _fixedPoint:Double = Double.NaN
@@ -53,14 +37,23 @@ abstract class NumpressArray(
 	protected def getIterator:Iterator[Double]
 	protected def optimalFixedPoint(xs:Seq[Double]):Double
 	protected def maxByteSize(nDoubles:Int):Int
-	protected def compress(d:Double, c:Chunk):Int
+	protected def compress(d:Double):Unit
+	protected def prepareRead:Unit = {}
 	
 	private var _length = 0
 	def length = _length
 	def iterator = {
 		if (!initiated) initiate(fixedPoint)
-		if (queue.nonEmpty) processQueue
+		processQueue
+		prepareRead
 		getIterator
+	}
+	
+	def bytes:ArrayBuffer[Byte] = {
+		if (!initiated) initiate(fixedPoint)
+		processQueue
+		prepareRead
+		ba
 	}
 	
 	def +=(d:Double) = {
@@ -78,7 +71,7 @@ abstract class NumpressArray(
 		initiated = false
 		queue.clear
 		_fixedPoint = Double.NaN
-		ba.clearBytes
+		ba.clear 
 	}
 	def result:Iterable[Double] = this
 	
@@ -86,17 +79,14 @@ abstract class NumpressArray(
 		val _fp = 
 			if (fp > 0) fp 
 			else optimalFixedPoint(queue)
-		encodeFixedPoint(_fp, ba.chunk.a)
-		ba.chunk.i += 8
+		encodeFixedPoint(_fp, ba)
 		_fixedPoint = _fp
 		initiated = true
 	}
 	
 	def processQueue = {
-		ba.prepWrite(maxByteSize(queue.size))
-		val c = ba.chunk
 		for (d <- queue) 
-			c.i += compress(d, c)
+			compress(d)
 		queue.clear
 	}
 }

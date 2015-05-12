@@ -7,6 +7,7 @@ import org.junit.Test
 import org.junit.Before
 
 import scala.util.Random
+import ms.numpress.MSNumpress
 
 class NumSlofArrayTest {
 
@@ -24,6 +25,9 @@ class NumSlofArrayTest {
 		val a = new NumSlofArray
 		assert(a.isEmpty)
 		
+		val bytes = a.bytes.toArray
+		val res = new Array[Double](4)
+		assertEquals(0, MSNumpress.decodeSlof(bytes, bytes.length, res))
 	}
 	
 	@Test
@@ -31,6 +35,21 @@ class NumSlofArrayTest {
 		val a = new NumSlofArray
 		
 		for (i <- 0 until 100) a += math.pow(10, Random.nextDouble*100)
+	}
+	
+	@Test
+	def encodeOrigValidation() = {
+		val n = 101
+		val in = (0 until n).map(_ => math.pow(10, Random.nextDouble*6))
+		
+		val a = new NumSlofArray(NumSlofArray.optimalFixedPoint(in.max))
+		for (d <- in) a += d
+		
+		
+		val bytes = a.bytes.toArray
+		val res = new Array[Double](n)
+		assertEquals(n, MSNumpress.decodeSlof(bytes, bytes.length, res))
+		assertSeq(in, res)
 	}
 	
 	@Test
