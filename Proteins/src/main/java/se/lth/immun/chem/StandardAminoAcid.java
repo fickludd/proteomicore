@@ -29,6 +29,7 @@ public enum StandardAminoAcid implements IAminoAcid {
 	W ('W', new ElementComposition(new Element[]{Element.C,Element.H,Element.N,Element.O				}, new int[]{11, 10, 2, 1})), 
 	Y ('Y', new ElementComposition(new Element[]{Element.C,Element.H,Element.N,Element.O				}, new int[]{9, 9, 1, 2})), 
 	V ('V', new ElementComposition(new Element[]{Element.C,Element.H,Element.N,Element.O				}, new int[]{5, 9, 1, 1})), 
+	U ('U', new ElementComposition(new Element[]{Element.C,Element.H,Element.N,Element.O,Element.Se }, new int[]{3, 7, 1, 2, 1})),
 	X ('X', new ElementComposition(new Element[]{Element.C,Element.H,Element.N,Element.O				}, new int[]{6, 11, 1, 1}));
 	
 	final ElementComposition composition;
@@ -71,6 +72,7 @@ public enum StandardAminoAcid implements IAminoAcid {
 			case 'W': return W; 
 			case 'Y': return Y; 
 			case 'V': return V; 
+			case 'U': return U; 
 			case 'X': return X; 
 			default: return null;
 		}
