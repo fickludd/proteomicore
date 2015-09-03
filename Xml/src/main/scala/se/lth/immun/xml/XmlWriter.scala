@@ -47,13 +47,13 @@ class XmlWriter(writer:Writer, bufferSize:Int = 4096) {
     	}
     }
 	
-	def startDocument() = {
-		bw.write("<?xml version=\"1.0\"?>\n")
-	}
+	def startDocument = 
+		bw.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n")
 	
-	def endDocument() = {
-		bw.flush()
-		bw.close()
+	
+	def endDocument = {
+		bw.flush
+		bw.close
 	}
 
     def writeAttribute[T](attributeName:String, value:T) =
@@ -65,18 +65,18 @@ class XmlWriter(writer:Writer, bufferSize:Int = 4096) {
     
     def startElement(element:String) = {
     	if (!elementStack.isEmpty && elementStack.head == lastElement)
-    		closeStartElement()
+    		closeStartElement
     	bw.write("  " * elementStack.length + "<"+element)
     	elementStack = element :: elementStack
     	lastElement = element
     }
     
-    def closeStartElement() = {
+    def closeStartElement = {
     	bw.write(">\n")
     	lastElement = ""
     }
     
-    def endStartElement() = {
+    def endStartElement = {
     	bw.write("/>\n")
     	lastElement = ""
     }
@@ -84,7 +84,7 @@ class XmlWriter(writer:Writer, bufferSize:Int = 4096) {
     def endElement() = {
     	if (elementStack.isEmpty) throw new IOException("No start element to end!")
     	if (elementStack.head == lastElement)
-    		endStartElement()
+    		endStartElement
     	else if (lastElement == null) {
     		bw.write("</"+elementStack.head+">\n")
     		lastElement = ""

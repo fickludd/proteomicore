@@ -10,17 +10,17 @@ import java.io.StringWriter
 
 class XmlWriterTest extends AssertionsForJUnit {
 	
-	var s:StringWriter = null;
-	var w:XmlWriter = null;
+	var s:StringWriter = null
+	var w:XmlWriter = null
 	
 	@Before
-	def setupWriter() = {
+	def setupWriter = {
 		s = new StringWriter
-		w = new XmlWriter(s);
+		w = new XmlWriter(s)
 	}
 	
 	@Test
-	def writeElement() = {
+	def writeElement = {
 		w.startElement("book")
 		w.closeStartElement
 		w.endDocument
@@ -28,7 +28,7 @@ class XmlWriterTest extends AssertionsForJUnit {
 	}
 	
 	@Test
-	def writeStartEndElement() = {
+	def writeStartEndElement = {
 		w.startElement("book")
 		w.endElement
 		w.endDocument
@@ -36,7 +36,7 @@ class XmlWriterTest extends AssertionsForJUnit {
 	}
 	
 	@Test
-	def writeEndElement() = {
+	def writeEndElement = {
 		w.startElement("h")
 		w.startElement("book")
 		w.startElement("author")
@@ -49,7 +49,7 @@ class XmlWriterTest extends AssertionsForJUnit {
 	}
 	
 	@Test
-	def writeRawTextElement() = {
+	def writeRawTextElement = {
 		w.startElement("h")
 		w.startElement("book")
 		w.startElement("author")
@@ -62,7 +62,7 @@ class XmlWriterTest extends AssertionsForJUnit {
 	}
 	
 	@Test
-	def writeAttribute() = {
+	def writeAttribute = {
 		w.startElement("book")
 		w.writeAttribute("title", "My book")
 		w.writeAttribute("year", 2011)
@@ -72,10 +72,17 @@ class XmlWriterTest extends AssertionsForJUnit {
 	}
 	
 	@Test
-	def writeStartListElement() = {
+	def writeStartListElement = {
 		w.startListElement("books", Array("A", "B", "C"))
 		w.endElement
 		w.endDocument
 		assertEquals("<books count=\"3\"/>\n", s.toString)
+	}
+	
+	@Test
+	def writeStartDocument = {
+		w.startDocument
+		w.endDocument
+		assertEquals("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n", s.toString)
 	}
 }
