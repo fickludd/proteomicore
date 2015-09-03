@@ -219,7 +219,7 @@ class MzML {
 	def write(w:XmlWriter, dw:MzMLDataWriters) = {
 		import MzML._
 		
-		w.startDocument()
+		w.startDocument
 		w.startElement(INDEXED_MZML)
 		w.writeOptional(XMLNS, idx_xmlns)
 		w.writeOptional(XMLNS_XSI, idx_xmlns_xsi)

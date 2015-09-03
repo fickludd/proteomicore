@@ -50,11 +50,11 @@ class MzMLWriteTest {
 				)
 		
 		m.write(w, dw)
-		var original = new StringBuilder
-		var br = new BufferedReader(new FileReader(f))
+		val original = new StringBuilder
+		val br = new BufferedReader(new FileReader(f))
 		while ({
-			var line = br.readLine
-			if (line != null) original ++= line+"\n"
+			val line = br.readLine
+			if (line != null) original ++= line + "\n"
 			line != null && line != ""
 		}) {}
 		assertEquals(original.toString, sw.toString)
