@@ -72,37 +72,62 @@ public class Peptide implements IMolecule {
 	
 	public PeptideFragment[] getFragments(EPeptideFragment[] fragments) {
 		PeptideFragment[] f = new PeptideFragment[(aminoAcids.length-1) * fragments.length];
-		double[] masses = new double[aminoAcids.length];
-		for (int i = 0; i < aminoAcids.length; i++) {
-			masses[i] = aminoAcids[i].getComposition().monoisotopicMass();
-		}
+		double prefixMass = 0.0;
+		if (nTermModification != null)
+			prefixMass += nTermModification.getComposition().monoisotopicMass();
+		double suffixMass = Constants.WATER_WEIGHT;
+		if (cTermModification != null)
+			suffixMass += cTermModification.getComposition().monoisotopicMass();
 		
-		for (int i = 0; i < fragments.length; i++) {
-			EPeptideFragment fragment = fragments[i];
-			for (int j = 1; j < aminoAcids.length; j++) {
+		for (int i = 0; i < aminoAcids.length-1; i++) {
+			prefixMass += aminoAcids[i].monoisotopicMass();
+			for (int j = 0; j < fragments.length; j++) {
 				double mass = 0.0;
+				EPeptideFragment fragment = fragments[j];
 				switch (fragment) {
 					case a:
-					case c:
+						mass = prefixMass - EPeptideFragment.A_MASS_DIFF;
+						break;
 					case b:
-						for (int k = 0; k < j; k++)
-							mass += masses[k];
-						if (nTermModification != null)
-							mass += nTermModification.getComposition().monoisotopicMass();
+						mass = prefixMass;
+						break;
+					case c:
+						mass = prefixMass + EPeptideFragment.CZ_MASS_DIFF;
 						break;
 					case x:
-					case z:
 					case y:
-						for (int k = 0; k < j; k++)
-							mass += masses[masses.length - k - 1];
-						mass += Constants.WATER_WEIGHT;
-						if (cTermModification != null)
-							mass += cTermModification.getComposition().monoisotopicMass();
+					case z:
+						continue;
+				}
+				
+				f[i * (fragments.length) + j] = 
+						new PeptideFragment(fragment, i, mass, this);
+			}
+		}
+		
+		for (int i = aminoAcids.length-1; i > 0 ; i--) {
+			suffixMass += aminoAcids[i].monoisotopicMass();
+			for (int j = 0; j < fragments.length; j++) {
+				double mass = 0.0;
+				EPeptideFragment fragment = fragments[j];
+				switch (fragment) {
+					case a:
+					case b:
+					case c:
+						continue;
+					case x:
+						mass = suffixMass + EPeptideFragment.X_MASS_DIFF;
+						break;
+					case y:
+						mass = suffixMass;
+						break;
+					case z:
+						mass = suffixMass - EPeptideFragment.CZ_MASS_DIFF;
 						break;
 				}
 				
-				f[i * (aminoAcids.length-1) + (j-1)] = 
-						new PeptideFragment(fragment.type, j, mass, this);
+				f[(i-1) * (fragments.length) + j] = 
+						new PeptideFragment(fragment, aminoAcids.length - i, mass, this);
 			}
 		}
 		

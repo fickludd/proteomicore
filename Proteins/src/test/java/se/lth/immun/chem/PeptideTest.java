@@ -50,12 +50,16 @@ public class PeptideTest {
 	@Test
 	public void getFragments() {
 		Peptide p = new Peptide(aas);
-		EPeptideFragment[] fragmentTypes = {EPeptideFragment.y, EPeptideFragment.b};
+		EPeptideFragment[] fragmentTypes = {EPeptideFragment.a, EPeptideFragment.b, EPeptideFragment.c, EPeptideFragment.x, EPeptideFragment.y, EPeptideFragment.z};
 		PeptideFragment[] fs = p.getFragments(fragmentTypes);
 		
-		assertEquals(20*2, fs.length);
-		assertEquals(456.20809, fs[23].mass, 0.00001);
-		assertEquals(579.305674684, fs[3].mass, 0.00001);
+		assertEquals(20*6, fs.length);
+		assertEquals(1209.57991 - Constants.PROTON_WEIGHT, fs[60].mass, 0.001); // a11
+		assertEquals(1365.66978 - Constants.PROTON_WEIGHT, fs[67].mass, 0.001); // b12
+		assertEquals(1513.73682 - Constants.PROTON_WEIGHT, fs[74].mass, 0.001); // c13
+		assertEquals(1038.49370 - Constants.PROTON_WEIGHT, fs[75].mass, 0.001); // x8
+		assertEquals(865.44602 - Constants.PROTON_WEIGHT, fs[82].mass, 0.001); // y9
+		assertEquals(751.36671 - Constants.PROTON_WEIGHT, fs[89].mass, 0.001); // z10
 	}
 	
 	@Test
