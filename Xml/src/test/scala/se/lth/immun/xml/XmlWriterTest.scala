@@ -16,7 +16,7 @@ class XmlWriterTest extends AssertionsForJUnit {
 	@Before
 	def setupWriter = {
 		s = new StringWriter
-		w = new XmlWriter(s)
+		w = new XmlWriter(s, () => 0, () => "checksum")
 	}
 	
 	@Test

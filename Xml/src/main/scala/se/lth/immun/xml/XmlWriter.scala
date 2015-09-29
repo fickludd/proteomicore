@@ -5,30 +5,61 @@ import java.io.BufferedWriter
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.io.OutputStream
-
-trait WithCount {
-	def count:Long
-}
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.util.zip.GZIPOutputStream
+import java.security.DigestOutputStream
+import java.security.MessageDigest
 
 object XmlWriter {
-	def apply(outputStream:OutputStream, bufferSize:Int = 4096) = {
-		val cos = new CountingOutputStream(outputStream)
-		new XmlWriter(new OutputStreamWriter(cos), bufferSize) with WithCount {
-			def count = {
-				bw.flush
-				cos.count
-			}
-		}
+	def apply(file:File, gzip:Boolean, bufferSize:Int = 4096) = {
+		val os = 
+			if (gzip) new GZIPOutputStream(new FileOutputStream(file))
+			else new FileOutputStream(file)
+		val sha1 = MessageDigest.getInstance("SHA-1")
+		val sha1os = new DigestOutputStream(os, sha1)
+		val cos = new CountingOutputStream(sha1os)
+		new XmlWriter(
+				new OutputStreamWriter(cos), 
+				cos.count _,
+				() => sha1.digest.map(b => "%02x".format(b)).mkString,
+				bufferSize
+			)
 	}
+	
+	type ChecksumType = String
+	type Checksum = String
 }
 
-class XmlWriter(writer:Writer, bufferSize:Int = 4096) {
+class XmlWriter(
+		writer:Writer, 
+		underlyingByteOffset:() => Long, 
+		underlyingChecksum: () => XmlWriter.Checksum, 
+		bufferSize:Int = 4096
+) {
 		
 	var bw = new BufferedWriter(writer, bufferSize)
-	def byteCount:Long = 0
 	private var elementStack = List[String]()
 	private var lastElement = ""
 	
+	def byteOffset:Long = {
+		bw.flush
+		underlyingByteOffset()
+	}
+	
+	def checksum:String = {
+		bw.flush
+		underlyingChecksum()
+	}
+	
+	var lastStartByteOffset:Option[Long] = None
+	var storeNext = false
+	def storeNextElementStartByteOffset =
+		storeNext = true
+		
+	
+		
 	def write(str:String):Unit = bw.write(str)
 	
 	def text(text:String, newlines:Boolean = true) = {
@@ -66,7 +97,13 @@ class XmlWriter(writer:Writer, bufferSize:Int = 4096) {
     def startElement(element:String) = {
     	if (!elementStack.isEmpty && elementStack.head == lastElement)
     		closeStartElement
-    	bw.write("  " * elementStack.length + "<"+element)
+    	if (storeNext) {
+    		bw.write("  " * elementStack.length)
+    		lastStartByteOffset = Some(byteOffset)
+    		storeNext = false
+    		bw.write("<"+element)
+    	} else
+    		bw.write("  " * elementStack.length + "<"+element)
     	elementStack = element :: elementStack
     	lastElement = element
     }
