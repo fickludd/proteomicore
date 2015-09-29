@@ -1,0 +1,71 @@
+package se.lth.immun.protocol;
+
+option java_package = "se.lth.immun.protocol";
+option java_outer_classname = "MSFragmentationProtocol";
+
+/*
+	A MS fragmentation protocol file contains 
+
+	1-n
+		1 MsgSize describing the bytesize of the following AAMolecule message
+		1 AAMolecule
+
+	AA sequences should have UniMod modifications if modified
+	
+	If a AAMolecule is a cross-link, use the Taxlink crosslinking annotation.
+	Also set the 'origPeptide' property of fragments to annotate which of the 
+	crosslinked peptides the fragment came from.
+*/
+
+message AAMolecule {
+	required string sequence = 1;
+	optional double mass = 2;
+	repeated Observation observation = 10;
+}
+
+enum FragmentationType {
+	CID = 0;
+	HCD = 1;
+	ETD = 2;
+}
+
+enum FragmentType {
+	A = 1;
+	B = 2;
+	C = 3;
+	X = 4;
+	Y = 5;
+	Z = 6;
+	M = 7;
+}
+
+message Fragment {
+	required double intensity = 1;
+	required FragmentType type = 2;
+	optional double mz = 3;
+	optional uint32 ordinal = 4;
+	optional int32 charge = 5;
+	optional uint32 internalFirst = 6;
+	optional uint32 internalLast = 7;
+	optional uint32 origPeptide = 8;
+	optional double intensityStd = 9;
+	optional uint32 n = 10 [default = 1];
+}
+
+message Observation {
+	required FragmentationType type = 1;
+	required int32 charge = 2;
+	required double ce = 3;
+	optional double precursorMz = 4;
+	optional double precursorIntensity = 5;
+	optional double iRT = 6;
+	optional double fragmentBaseIntensity = 7;
+	optional double qValue = 8;
+	optional double percentAnnotatedOfMS2tic = 9;
+	optional uint32 n = 10 [default = 1];
+	repeated Fragment fragment = 15;
+}
+
+message MsgSize {
+	required fixed32 size = 1;
+}
