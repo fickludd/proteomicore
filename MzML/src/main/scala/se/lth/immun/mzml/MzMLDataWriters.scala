@@ -4,7 +4,7 @@ import se.lth.immun.xml.XmlWriter
 
 class MzMLDataWriters(
 	var specCount:Int,
-	var writeSpectra:XmlWriter => Unit,
+	var writeSpectra:XmlWriter => Seq[MzML.OffsetRef],
 	var chromCount:Int,
-	var writeChromatograms:XmlWriter => Unit
+	var writeChromatograms:XmlWriter => Seq[MzML.OffsetRef]
 ) {}

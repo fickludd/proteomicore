@@ -83,7 +83,7 @@ object GhostBinaryDataArray {
 				BytesLength(decompressed, readDataLength)
 			} else
 				BytesLength(rawBytes, rawBytes.length)
-		
+				
 		val afterNumpress =
 			if (numCompression == "NO") {
 				if (double) 	parseDoubleArray(afterZlib.bytes, afterZlib.length)

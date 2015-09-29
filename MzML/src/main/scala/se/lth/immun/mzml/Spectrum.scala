@@ -56,6 +56,8 @@ object Spectrum {
 }
 
 class Spectrum {
+	import MzML._
+
 	var id:String = null
 	var defaultArrayLength:Int = -1
 	var index:Int = -1
@@ -74,8 +76,14 @@ class Spectrum {
 
 	
 	
-	def write(w:XmlWriter) = {
-		import MzML._
+	def write(
+			w:XmlWriter, 
+			binaryByteChannel:FileChannel,
+			scanTime:Option[Double] = None,
+			spotId:Option[String] = None
+	):OffsetRef = {
+		
+		val byteOffset = w.byteOffset
 		
 		w.startElement(SPECTRUM)
 		w.writeAttribute(INDEX, index)
@@ -106,10 +114,12 @@ class Spectrum {
 		
 		if (!binaryDataArrays.isEmpty) {
 			w.startListElement(BINARY_DATA_ARRAY_LIST, binaryDataArrays)
-			for (x <- binaryDataArrays) x.write(w, null)
+			for (x <- binaryDataArrays) x.write(w, binaryByteChannel)
 			w.endElement
 		}
 			
 		w.endElement
+		
+		OffsetRef(id, byteOffset, scanTime, spotId)
 	}
 }

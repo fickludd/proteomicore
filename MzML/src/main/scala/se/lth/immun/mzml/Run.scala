@@ -42,6 +42,8 @@ object Run {
 }
 
 class Run {
+	import MzML._
+	
 	var id:String = null
 	var defaultInstrumentConfigurationRef:String = null
 	var defaultSourceFileRef:Option[String] = None
@@ -56,8 +58,7 @@ class Run {
 	var chromatogramList:Option[ChromatogramList] = None
 	
 	
-	def write(w:XmlWriter, dw:MzMLDataWriters) = {
-		import MzML._
+	def write(w:XmlWriter, dw:MzMLDataWriters):(Option[Seq[OffsetRef]], Option[Seq[OffsetRef]]) = {
 		
 		w.startElement(RUN)
 		w.writeAttribute(ID, id)
@@ -69,12 +70,12 @@ class Run {
 		for (x <- cvParams) x.write(w)
 		for (x <- userParams) x.write(w)
 		
-		if (spectrumList.isDefined)
-			spectrumList.get.write(w, dw.specCount, dw.writeSpectra)
+		val spectrumIndices = spectrumList.map(_.write(w, dw.specCount, dw.writeSpectra))
 			
-		if (chromatogramList.isDefined)
-			chromatogramList.get.write(w, dw.chromCount, dw.writeChromatograms)
+		val chromatogramIndices = chromatogramList.map(_.write(w, dw.chromCount, dw.writeChromatograms))
 		
 		w.endElement
+		
+		(spectrumIndices, chromatogramIndices)
 	}
 }

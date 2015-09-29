@@ -318,4 +318,18 @@
       </chromatogramList>
     </run>
   </mzML>
+  <indexList count="2">
+    <index name="spectrum">
+      <offset idRef="scan=19">6858</offset>
+      <offset idRef="scan=20">10401</offset>
+      <offset idRef="scan=21">15388</offset>
+      <offset idRef="sample=1 period=1 cycle=22 experiment=1">16898</offset>
+    </index>
+    <index name="chromatogram">
+      <offset idRef="tic">20610</offset>
+      <offset idRef="sic">22211</offset>
+    </index>
+  </indexList>
+  <indexListOffset>24462</indexListOffset>
+  <fileChecksum>36e70fceed59cb7f51180b20e27c34fcc370393d</fileChecksum>
 </indexedmzML>

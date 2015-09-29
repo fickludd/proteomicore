@@ -33,21 +33,24 @@ object ChromatogramList {
 }
 
 class ChromatogramList {
+	import MzML._
+	
 	var defaultDataProcessingRef:String = null
 	
 	def write(
 			w:XmlWriter, 
 			chromCount:Int, 
-			writeChromatogram:XmlWriter => Unit
+			writeChromatograms:XmlWriter => Seq[OffsetRef]
 	) = {
-		import MzML._
 		
 		w.startElement(CHROMATOGRAM_LIST)
 		w.writeAttribute(COUNT, chromCount)
 		w.writeAttribute(DEFAULT_DATA_PROCESSING_REF, defaultDataProcessingRef)
 		
-		writeChromatogram(w)
+		val byteOffsets = writeChromatograms(w)
 		
 		w.endElement
+		
+		byteOffsets
 	}
 }

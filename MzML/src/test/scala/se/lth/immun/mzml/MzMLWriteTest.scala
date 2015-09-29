@@ -33,30 +33,37 @@ class MzMLWriteTest {
 		assert(m != null)
 		
 		
-		var sw = new StringWriter()
-		var w = new XmlWriter(sw)
+		var testOut = new File("target/test-classes/test.mzML")
+		var w = XmlWriter(testOut, false)
 		
 		var dw = new MzMLDataWriters(
 					spectra.length,
-					sw => {
-						for (s <- spectra)
-							s.write(sw)
-					},
+					sw => 
+						for (s <- spectra) yield
+							s.write(sw, null, None, None)
+					,
 					chromatograms.length,
-					cw => {
-						for (c <- chromatograms)
+					cw => 
+						for (c <- chromatograms) yield
 							c.write(cw, null)
-					}
 				)
 		
-		m.write(w, dw)
-		val original = new StringBuilder
+		m.write(w, dw, true)
+		val original = scala.io.Source.fromFile(f).getLines.mkString("\n")
+		val created = scala.io.Source.fromFile(testOut).getLines.mkString("\n")
+			
+		//for ((orig, creat) <- original.zip(created))
+		//	assertEquals(orig, creat)
+		
+		assertEquals(original, created)
+		
+		/*new StringBuilder
 		val br = new BufferedReader(new FileReader(f))
 		while ({
 			val line = br.readLine
 			if (line != null) original ++= line + "\n"
 			line != null && line != ""
-		}) {}
-		assertEquals(original.toString, sw.toString)
+		}) {}*/
+		//assertEquals(original.toString, sw.toString)
 	}
 }

@@ -48,6 +48,8 @@ object Chromatogram {
 }
 
 class Chromatogram {
+	import MzML._
+	
 	var id:String = null
 	var defaultArrayLength:Int = -1
 	var index:Int = -1
@@ -63,8 +65,9 @@ class Chromatogram {
 
 	
 	
-	def write(w:XmlWriter, binaryByteChannel:FileChannel) = {
-		import MzML._
+	def write(w:XmlWriter, binaryByteChannel:FileChannel):OffsetRef = {
+		
+		val byteOffset = w.byteOffset
 		
 		w.startElement(CHROMATOGRAM)
 		w.writeAttribute(INDEX, index)
@@ -87,5 +90,7 @@ class Chromatogram {
 		w.endElement
 		
 		w.endElement
+		
+		OffsetRef(id, byteOffset, None, None)
 	}
 }

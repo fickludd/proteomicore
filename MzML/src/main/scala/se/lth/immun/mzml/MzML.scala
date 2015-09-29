@@ -114,6 +114,9 @@ object MzML {
 	val ACCESSION 		= "accession"
 	val TYPE 			= "type"
 	val RUN		= "run"
+		
+		
+	case class OffsetRef(id:String, offset:Long, rt:Option[Double], spotId:Option[String])
 	
 	def fromFile(r:XmlReader, dataHandlers:MzMLDataHandlers, binaryByteChannel:FileChannel = null) = {
 		var t = new MzML
@@ -216,11 +219,12 @@ class MzML {
 	
 	
 	
-	def write(w:XmlWriter, dw:MzMLDataWriters) = {
+	def write(w:XmlWriter, dw:MzMLDataWriters, indexed:Boolean = false) = {
 		import MzML._
 		
 		w.startDocument
-		w.startElement(INDEXED_MZML)
+		if (indexed)
+			w.startElement(INDEXED_MZML)
 		w.writeOptional(XMLNS, idx_xmlns)
 		w.writeOptional(XMLNS_XSI, idx_xmlns_xsi)
 		w.writeOptional(XSI_SCHEMA_LOCATION, idx_xsi_schemaLocation)
@@ -268,10 +272,42 @@ class MzML {
 		for (x <- dataProcessings) x.write(w)
 		w.endElement
 		
-		run.write(w, dw)
+		val (specIndices, chromIndices) = run.write(w, dw)
+		
+		def length[T](opt:Option[T]) = if (opt.nonEmpty) 1 else 0
+		def writeIndex(name:String, offRefs:Seq[OffsetRef]) = {
+			w.startElement("index")
+			w.writeAttribute(NAME, name)
+			for (OffsetRef(id, offset, rt, spotId) <- offRefs) {
+				w.startElement("offset")
+				w.writeAttribute("idRef", id)
+				w.writeOptional("scanTime", rt)
+				w.writeOptional("spotID", spotId)
+				w.text(offset.toString, false)
+				w.endElement
+			}
+			w.endElement
+		}
 		
 		w.endElement
-		w.endElement
-		w.endDocument
+		if (indexed) {
+			val indexListOffset = w.byteOffset
+			w.startElement("indexList")
+			w.writeAttribute(COUNT, length(specIndices) + length(chromIndices))
+			specIndices.map(writeIndex("spectrum", _))
+			chromIndices.map(writeIndex("chromatogram", _))
+			w.endElement
+			
+			w.startElement("indexListOffset")
+			w.text(indexListOffset.toString, false)
+			w.endElement
+			
+			w.startElement("fileChecksum")
+			w.text(w.checksum, false)
+			w.endElement
+			
+			w.endElement // mzML
+		}
+		w.endDocument // mzML or indexedMzML
 	}
 }

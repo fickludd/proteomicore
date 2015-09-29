@@ -33,17 +33,24 @@ object SpectrumList {
 }
 
 class SpectrumList {
+	import MzML._
+	
 	var defaultDataProcessingRef:String = null
 	
-	def write(w:XmlWriter, specCount:Int, writeSpectra:XmlWriter => Unit) = {
-		import MzML._
+	def write(
+			w:XmlWriter, 
+			specCount:Int, 
+			writeSpectra:XmlWriter => Seq[OffsetRef]
+	) = {
 		
 		w.startElement(SPECTRUM_LIST)
 		w.writeAttribute(COUNT, specCount)
 		w.writeAttribute(DEFAULT_DATA_PROCESSING_REF, defaultDataProcessingRef)
 		
-		writeSpectra(w)
+		val byteOffsets = writeSpectra(w)
 		
 		w.endElement
+		
+		byteOffsets
 	}
 }
