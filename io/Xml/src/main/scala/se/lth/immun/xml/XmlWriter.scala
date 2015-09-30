@@ -28,6 +28,9 @@ object XmlWriter {
 			)
 	}
 	
+	def apply(w:Writer) =
+		new XmlWriter(w, () => 0L, () => "")
+	
 	type ChecksumType = String
 	type Checksum = String
 }

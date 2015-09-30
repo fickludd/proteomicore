@@ -198,7 +198,7 @@ class TraML {
 	def write(w:XmlWriter) = {
 		import TraML._
 		
-		w.startDocument()
+		w.startDocument
 		w.startElement(TRAML)
 		w.writeOptional(ID, id)
 		w.writeOptional(XMLNS, xmlns)

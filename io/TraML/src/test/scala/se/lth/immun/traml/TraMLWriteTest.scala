@@ -389,7 +389,7 @@ MSTEMETKAEDVETFAFQAEIAQLMSLIINTFYSNKEIFLRELISNSSDALDKIRYESLTDPSKLDNGKEELISNSSDAL
 	def writeToyExample = {
 		var f = TraML.fromFile(new XmlReader(new StringReader(TOY_EXAMPLE_TRAML)))
 		var sw = new StringWriter
-		f.write(new XmlWriter(sw))
+		f.write(XmlWriter(sw))
 		
 		var str = sw.toString
 		assertTrue(str != null)
