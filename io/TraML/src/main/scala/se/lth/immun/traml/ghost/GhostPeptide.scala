@@ -4,7 +4,7 @@ package se.lth.immun.traml.ghost
 import se.lth.immun.traml.Peptide
 import se.lth.immun.traml.CvParam
 import se.lth.immun.traml.UserParam
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.HashSet
 
 object GhostPeptide {
 	
@@ -54,7 +54,7 @@ class GhostPeptide {
 	var sequence:String 		= null
 	var label:String = ""
 	var labelGroup:String = ""
-	var proteins 				= new ArrayBuffer[String]
+	var proteins 				= new HashSet[String]
 	var charge:Option[Int]		= None
 	var fullPeptideName:Option[String] = None
 	var tramlPeptide:Peptide 	= null
