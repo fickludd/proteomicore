@@ -26,7 +26,8 @@ object KojakXLink {
 	
 	
 	def fromString(str:String, conf:Conf):Either[XLink, String] = {
-		val barCount = str.count(_ == '-')
+		if (!(str.startsWith("-.") || str.endsWith(".-")))
+			return Right("'%s' is not a Kojak XLink or peptide. Doesn't start with -. or end with .-")
 		val isLoop = str.contains("-LOOP")
 		val isCross = str.contains("--")
 		val stripped = str.trim.drop(2).dropRight(2)
