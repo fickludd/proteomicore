@@ -14,6 +14,24 @@ public class UniMod {
 		int is = 0;
 		int iaa = 0;
 		int sl = seq.length();
+		IMolecule nTermMod = null;
+		
+		if (seq.charAt(is) == '(') {
+			int start = is + 8;
+			is = start + 1;
+			while (seq.charAt(is) != ')' && is < sl) is++;
+			if (is == sl)
+				throw new IllegalArgumentException("Cannot parse unimod modification '"+seq.substring(start-1)+"' in peptide '"+seq+"'");
+			
+			int acc = Integer.parseInt(seq.substring(start, is));
+			UniModEntry ume = UniModEntry.fromUniModAcc(acc);
+			if (ume == null)
+				throw new IllegalArgumentException("Unknown unimod accession '"+acc+"' in peptide '"+seq+"'");
+			
+			is++;
+			nTermMod = ume.modification;
+		}
+		
 		while (is < sl) {
 			StandardAminoAcid aa = StandardAminoAcid.fromChar(seq.charAt(is));
 			if (aa == null)
@@ -43,7 +61,7 @@ public class UniMod {
 		IAminoAcid[] out = new IAminoAcid[iaa];
 		System.arraycopy(aas, 0, out, 0, iaa);
 		
-		return new Peptide(out);
+		return new Peptide(out, nTermMod, null);
 	}
 	
 	
