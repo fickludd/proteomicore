@@ -13,10 +13,13 @@ class CharReader(reader:Reader) {
 	var lineNo:Int = 0
 	var colNo:Int = 0
 	
-	def next = char = reader.read()
+	def next = {
+		char = reader.read()
+		char
+	}
 	
 	def until(c:Char):String = {
-		var sb:StringBuilder = new StringBuilder()
+		var sb = new StringBuilder
 		
 		if (char == CharReader.BEFORE_READ)
 			char = reader.read()
@@ -34,7 +37,54 @@ class CharReader(reader:Reader) {
 			next
 		}
 		
-		return sb.toString()
+		sb.result
+	}
+	
+	def xmlElement:String = {
+		var sb = new StringBuilder
+		
+		if (char == CharReader.BEFORE_READ || char.toChar == '<')
+			char = reader.read()
+		
+		while (char != '>') {
+			if (char == CharReader.EOF) return sb.toString()
+			val c = char.toChar
+			c match {
+				case '\\' => 
+					sb += c
+					sb += next.toChar
+				case '"' =>
+					sb ++= textElement
+				case _ =>
+					sb += c 
+			}
+			next
+		}
+		
+		sb.result
+	}
+	
+	private def textElement:String = {
+		var sb = new StringBuilder
+		
+		sb += '"'
+		next
+		
+		while (char != '"') {
+			if (char == CharReader.EOF) return sb.toString()
+			val c = char.toChar
+			c match {
+				case '\\' => 
+					sb += c
+					sb += next.toChar
+				case _ =>
+					sb += c
+			}
+			next
+		}
+		
+		sb += '"'
+		sb.result
 	}
 
 	def lineTag = "[line "+lineNo+"]"

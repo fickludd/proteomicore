@@ -39,8 +39,7 @@ class XmlReader(
 	private def parseElement:XmlElement = {
 		
 		_text = cr.until('<')
-		cr.next
-		elementString = cr.until('>')
+		elementString = cr.xmlElement
 		cr.next
 		if (_saveToBuff) buff ++= _rawText + _text
 		_rawText = '<' + elementString + '>'
@@ -51,7 +50,6 @@ class XmlReader(
 		}
 		if (elementString.startsWith("!--")) return parseElement
 		return new XmlElement(elementString)
-		
 	}
 	
 	def next:String = {

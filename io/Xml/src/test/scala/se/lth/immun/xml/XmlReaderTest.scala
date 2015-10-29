@@ -101,9 +101,9 @@ class XmlReaderTest extends AssertionsForJUnit {
 			<!-- list of books -->
 			<books>
 				<book title="World's End" />
-				<book title="Kafka and the world" ></book>
+				<book title="Kafka and the world"></book>
 				<book title="Cooking across the centuries" />
-				<bible />
+				<bible tricky="\">" />
 			</books>
 		"""
 	
