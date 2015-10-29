@@ -8,9 +8,12 @@ object TargetList {
 	
 	import TraML._
 	
-	def fromFile(r:XmlReader):TargetList = {
+	def fromFile(r:XmlReader, repFreq:Int):TargetList = {
 		var x = new TargetList
 		var e = r.top
+		
+		if (repFreq > 0)
+			println("num targets")
 		
 		r.next
 		while (r.in(e))
@@ -21,12 +24,18 @@ object TargetList {
 					x.userParams += UserParam.fromFile(r)
 				case TARGET_INCLUDE_LIST => 
 					r.next
-					while (r.was(TARGET))
+					while (r.was(TARGET)) {
 						x.targetIncludes += Target.fromFile(r)
+						if (repFreq > 0 && x.targetIncludes.size % repFreq == 0)
+							println(x.targetIncludes.size)
+					}
 				case TARGET_EXCLUDE_LIST => {
 					r.next
-					while (r.was(TARGET))
+					while (r.was(TARGET)) {
 						x.targetExcludes += Target.fromFile(r)
+						if (repFreq > 0 && x.targetExcludes.size % repFreq == 0)
+							println(x.targetExcludes.size)
+					}
 				}
 				case _ => r.skipThis
 			}

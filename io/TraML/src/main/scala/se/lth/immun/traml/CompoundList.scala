@@ -8,9 +8,12 @@ object CompoundList {
 	
 	import TraML._
 	
-	def fromFile(r:XmlReader):CompoundList = {
+	def fromFile(r:XmlReader, repFreq:Int):CompoundList = {
 		var x = new CompoundList
 		var e = r.top
+		
+		if (repFreq > 0)
+			println("num peptides and compounds\tpep-comp-ID")
 		
 		r.next
 		while (r.in(e))
@@ -21,8 +24,14 @@ object CompoundList {
 					x.userParams += UserParam.fromFile(r)
 				case PEPTIDE => 
 					x.peptides += Peptide.fromFile(r)
+					if (repFreq > 0 && (x.peptides.size + x.compounds.size) % repFreq == 0)
+						println("%d\t%s".format(x.peptides.size + x.compounds.size, x.peptides.last.id))
+		
 				case COMPOUND => 
 					x.compounds += Compound.fromFile(r)
+					if (repFreq > 0 && (x.peptides.size + x.compounds.size) % repFreq == 0)
+						println("%d\t%s".format(x.peptides.size + x.compounds.size, x.compounds.last.id))
+						
 				case _ => r.skipThis
 			}
 		

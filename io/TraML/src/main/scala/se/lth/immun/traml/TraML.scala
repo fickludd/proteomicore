@@ -93,7 +93,7 @@ object TraML {
 	val TARGET_EXCLUDE_LIST 	= "TargetExcludeList"
 	val TARGET 					= "Target"
 		
-	def fromFile(r:XmlReader) = {
+	def fromFile(r:XmlReader, repFreq:Int = 0) = {
 		var t = new TraML
 		
 		r.until(TRAML)
@@ -139,19 +139,29 @@ object TraML {
 				}
 				case PROTEIN_LIST => {
 					r.next
-					while (r.was(PROTEIN))
+					if (repFreq > 0)
+						println("num proteins\tprotName")
+					while (r.was(PROTEIN)) {
 						t.proteins += Protein.fromFile(r)
+						if (repFreq > 0 && t.proteins.size % repFreq == 0)
+							println("%d\t%s".format(t.proteins.size, t.proteins.last.id))
+					}
 				}
 				case COMPOUND_LIST => {
-					t.compoundList = CompoundList.fromFile(r)
+					t.compoundList = CompoundList.fromFile(r, repFreq)
 				}
 				case TRANSITION_LIST => {
 					r.next
-					while (r.was(TRANSITION))
+					if (repFreq > 0)
+						println("num transitions\ttransID")
+					while (r.was(TRANSITION)) {
 						t.transitions += Transition.fromFile(r)
+						if (repFreq > 0 && t.transitions.size % repFreq == 0)
+							println("%d\t%s".format(t.transitions.size, t.transitions.last.id))
+					}
 				}
 				case TARGET_LIST => {
-					t.targetList = Some(TargetList.fromFile(r))
+					t.targetList = Some(TargetList.fromFile(r, repFreq))
 				}
 				case _ => {
 					r.skipThis

@@ -9,10 +9,10 @@ import se.lth.immun.traml._
 
 object GhostTraML {
 	
-	def fromFile(r:XmlReader):GhostTraML = {
+	def fromFile(r:XmlReader, repFreq:Int = 0):GhostTraML = {
 		var x = new GhostTraML
 		
-		x.traml = TraML.fromFile(r)
+		x.traml = TraML.fromFile(r, repFreq)
 		for (p <- x.traml.proteins)
 			x.proteins += p.id -> GhostProtein.fromProtein(p)
 		for (p <- x.traml.compoundList.peptides)
@@ -21,19 +21,15 @@ object GhostTraML {
 			x.compounds += p.id -> GhostCompound.fromCompound(p)
 		
 		for (t <- x.traml.transitions) {
-			var gt = GhostTransition.fromTransition(t)
-			x.transitions += gt
-			val key = new Tuple2(gt.q1, gt.peptideRef)
-			if (!x.transitionGroups.contains(key))
-				x.transitionGroups += key -> new ArrayBuffer[GhostTransition]
-			x.transitionGroups(key) += gt
+			var gt = GhostTransition.fromTransition(t, x.peptides, x.compounds)
+			x += gt
 		}
 		
 		if (x.traml.targetList.isDefined)
 			for (t <- x.traml.targetList.get.targetIncludes) {
-				var gt = GhostTarget.fromTarget(t)
-				x.includes += gt
-				val key = gt.peptideRef
+				var gt = GhostTarget.fromTarget(t, x.peptides, x.compounds)
+				x += gt
+				val key = gt.pepCompId
 				if (!x.includeGroups.contains(key))
 					x.includeGroups += key -> new ArrayBuffer[GhostTarget]
 				x.includeGroups(key) += gt
@@ -59,7 +55,7 @@ class GhostTraML {
 	
 	def +=(gt:GhostTransition) = {
 		transitions += gt
-		val key = (gt.q1, peptides(gt.peptideRef).sequence)
+		val key = (gt.q1, gt.pepCompId)
 		if (!transitionGroups.contains(key))
 			transitionGroups(key) = new ArrayBuffer
 		transitionGroups(key) += gt
@@ -69,7 +65,7 @@ class GhostTraML {
 	
 	def +=(gt:GhostTarget) = {
 		includes += gt
-		val key = if (gt.peptideRef != null) gt.peptideRef else gt.compoundRef
+		val key = gt.pepCompId
 		if (!includeGroups.contains(key))
 			includeGroups(key) = new ArrayBuffer
 		includeGroups(key) += gt

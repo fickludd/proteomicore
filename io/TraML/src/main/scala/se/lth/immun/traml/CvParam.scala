@@ -21,6 +21,20 @@ object CvParam {
 		r.next
 		return x
 	}
+	
+	def MS[T](acc:String, name:String, value:Option[T], unit:Option[(String, String, String)]) = {
+		val cv = new CvParam
+		cv.cvRef = "MS"
+		cv.accession = acc
+		cv.name = name
+		cv.value = value.map(_.toString)
+		for ((ucv, uacc, uname) <- unit) {
+			cv.unitCvRef = Some(ucv)
+			cv.unitAccession = Some(uacc)
+			cv.unitName = Some(uname)
+		}
+		cv
+	}
 }
 
 class CvParam {

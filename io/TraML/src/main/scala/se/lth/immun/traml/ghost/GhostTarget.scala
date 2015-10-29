@@ -6,20 +6,22 @@ import se.lth.immun.traml.Precursor
 import se.lth.immun.traml.Configuration
 import se.lth.immun.traml.RetentionTime
 
+import Ghost._
+	
 object GhostTarget {
 
-	import Ghost._
-	
-	def fromTarget(t:Target):GhostTarget = {
+	def fromTarget(
+			t:Target,
+			peps:String => GhostPeptide, 
+			comps:String => GhostCompound
+	):GhostTarget = {
 		var x = new GhostTarget
 		
 		x.id = t.id
 		
-		for (cv <- t.cvParams)
-			cv.accession match {
-				case PRECURSOR_ION_INTENSITY_ACC 	=> x.intensity = cv.value.get.toDouble
-				case _ 								=> {}
-			}
+		x.intensity = t.cvParams.find(
+				_.accession == PRECURSOR_ION_INTENSITY_ACC
+			).flatMap(_.value.map(_.toDouble))
 		
 		for (cv <- t.precursor.cvParams)
 			cv.accession match {
@@ -28,24 +30,16 @@ object GhostTarget {
 				case _ 								=> {}
 			}
 		
-		var rt0 = -1.0
-		var rt1 = -1.0
-		var rt2 = -1.0
-		if (t.retentionTime.isDefined)
-			for (cv <- t.retentionTime.get.cvParams)
-				cv.accession match {
-					case LOCAL_RETENTION_TIME_ACC 		=> rt1 = cv.value.get.toDouble
-					case RT_WINDOW_LOWER_OFFSET_ACC 	=> rt0 = cv.value.get.toDouble
-					case RT_WINDOW_UPPER_OFFSET_ACC 	=> rt2 = cv.value.get.toDouble
-					case _ => {}
-				}
-		x.rtStart 		= rt1 - rt0
-		x.rtEnd 		= rt1 + rt2
 		
-		if (t.peptideRef.isDefined)
-			x.peptideRef = t.peptideRef.get
-		if (t.compoundRef.isDefined)
-			x.compoundRef = t.compoundRef.get
+		for {
+			rt <- t.retentionTime
+			grt <- GhostRetentionTime.fromRetentionTime(rt)
+		} {
+			x.localRT = Some(grt)
+		}
+		
+		x.peptide 	= t.peptideRef.map(peps)
+		x.compound 	= t.compoundRef.map(comps)
 		x.target 	= t
 		
 		x
@@ -57,21 +51,24 @@ class GhostTarget {
 	
 	var q1:Double = -1
 	var q1z:Int = 0
-	var rtStart:Double = Double.NaN
-	var rtEnd:Double = Double.NaN
-	var peptideRef:String = null
-	var compoundRef:String = null
-	var intensity:Double = -1
+	var localRT:Option[GhostRetentionTime.RT] = None
+	var peptide:Option[GhostPeptide] = None
+	var compound:Option[GhostCompound] = None
+	var intensity:Option[Double] = None
 	var target:Target = null
 	
-	import Ghost._
-	
+	def pepCompId = 
+		peptide.map(_.id).getOrElse("") + "-" + compound.map(_.id).getOrElse("") 
+		
+	def isCompound(id:String) = compound.map(_.id == id).getOrElse(false)
+	def isPeptide(id:String) = peptide.map(_.id == id).getOrElse(false)
+		
 	def toTarget = {
 		
 		var t = if (target != null) target else new Target
 		t.id = id
 		
-		if (intensity >= 0)
+		for (x <- intensity)
 			t.cvParams.find(_.accession == PRECURSOR_ION_INTENSITY_ACC) match {
 				case Some(cv) => cv.value = Some(intensity.toString)
 				case None => t.cvParams += intensityParam
@@ -89,77 +86,35 @@ class GhostTarget {
 			}
 		}
 		
-		if (!java.lang.Double.isNaN(rtStart) && !java.lang.Double.isNaN(rtEnd))
-			t.retentionTime = Some(rt)
+		t.retentionTime = localRT.map(_.toRetentionTime)
 		
-		
-		if (peptideRef != null) t.peptideRef = Some(peptideRef)
-		if (compoundRef != null) t.compoundRef = Some(compoundRef)
+		t.peptideRef = peptide.map(_.id)
+		t.compoundRef = compound.map(_.id)
 		
 		t
 	}
 	
 	
-	def intensityParam = {
-		var cv = new CvParam
-		cv.cvRef = "MS"
-		cv.accession = PRECURSOR_ION_INTENSITY_ACC
-		cv.name = "intensity of precursor ion"
-		cv.value = Some(intensity.toString)
-		cv
-	}
+	def intensityParam = 
+		CvParam.MS(
+			PRECURSOR_ION_INTENSITY_ACC,
+			"intensity of precursor ion",
+			intensity, None)
 	
 	
 	
-	def qParam(q:Double) = {
-		var cv = new CvParam
-		cv.cvRef = "MS"
-		cv.accession = ISOLATION_WINDOW_TARGET_ACC
-		cv.name = "isolation window target m/z"
-		cv.value = Some(q.toString)
-		cv
-	}
+	
+	def qParam(q:Double) = 
+		CvParam.MS(
+				ISOLATION_WINDOW_TARGET_ACC,
+				"isolation window target m/z",
+				Some(q), None)
 	
 	
 	
-	def zParam(z:Int) = {
-		var cv = new CvParam
-		cv.cvRef = "MS"
-		cv.accession = CHARGE_STATE_ACC
-		cv.name = "charge state"
-		cv.value = Some(z.toString)
-		cv
-	}
-	
-	
-	
-	def rt = {
-		var x = new RetentionTime
-		
-		var mid = (rtEnd + rtStart)/2
-		var offset = rtEnd - mid
-		
-		var cv = new CvParam
-		cv.cvRef = "MS"
-		cv.accession = LOCAL_RETENTION_TIME_ACC
-		cv.name = "local retention time"
-		cv.value = Some(mid.toString)
-		x.cvParams += cv
-		
-		cv = new CvParam
-		cv.cvRef = "MS"
-		cv.accession = RT_WINDOW_LOWER_OFFSET_ACC
-		cv.name = "retention time window lower offset"
-		cv.value = Some(offset.toString)
-		x.cvParams += cv
-		
-		cv = new CvParam
-		cv.cvRef = "MS"
-		cv.accession = RT_WINDOW_UPPER_OFFSET_ACC
-		cv.name = "retention time window upper offset"
-		cv.value = Some(offset.toString)
-		x.cvParams += cv
-		
-		x
-	}
+	def zParam(z:Int) = 
+		CvParam.MS(
+				CHARGE_STATE_ACC,
+				"charge state",
+				Some(z), None)
 }

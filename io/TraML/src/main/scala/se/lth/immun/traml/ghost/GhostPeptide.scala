@@ -6,10 +6,10 @@ import se.lth.immun.traml.CvParam
 import se.lth.immun.traml.UserParam
 import scala.collection.mutable.HashSet
 
+import Ghost._
+	
 object GhostPeptide {
-	
-	import Ghost._
-	
+		
 	val FULL_PEPTIDE_NAME = "full_peptide_name"
 	
 	def fromPeptide(p:Peptide):GhostPeptide = {
@@ -43,6 +43,13 @@ object GhostPeptide {
 			}
 		for (pr <- p.proteinRefs)
 			x.proteins += pr
+			
+		for {
+			rt <- p.retentionTimes
+			grt <- GhostRetentionTime.fromRetentionTime(rt)
+		} {
+			x.rt = Some(grt)
+		}
 		
 		return x
 	}
@@ -58,8 +65,7 @@ class GhostPeptide {
 	var charge:Option[Int]		= None
 	var fullPeptideName:Option[String] = None
 	var tramlPeptide:Peptide 	= null
-	
-	import Ghost._
+	var rt:Option[GhostRetentionTime.RT] = None
 	
 	def toPeptide = {
 		var p = new Peptide

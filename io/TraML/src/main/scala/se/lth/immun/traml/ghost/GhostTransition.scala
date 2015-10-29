@@ -13,17 +13,19 @@ import se.lth.immun.traml.RetentionTime
 object GhostTransition {
 
 	import Ghost._
+	import GhostRetentionTime._
 	
-	def fromTransition(t:Transition):GhostTransition = {
+	def fromTransition(
+			t:Transition, 
+			peps:String => GhostPeptide, 
+			comps:String => GhostCompound
+	):GhostTransition = {
 		var x = new GhostTransition
 		
 		x.id = t.id
 		
-		for (cv <- t.cvParams)
-			cv.accession match {
-				case PRODUCT_ION_INTENSITY_ACC 		=> x.intensity = cv.value.get.toDouble
-				case _ 								=> {}
-			}
+		for (cv <- t.cvParams.find(_.accession == PRODUCT_ION_INTENSITY_ACC))
+			x.intensity = cv.value.map(_.toDouble)
 		
 		for (cv <- t.precursor.cvParams)
 			cv.accession match {
@@ -34,7 +36,7 @@ object GhostTransition {
 		
 		for (cv <- t.product.cvParams)
 			cv.accession match {
-				case PRODUCT_ION_INTENSITY_ACC 		=> x.intensity = cv.value.get.toDouble
+				case PRODUCT_ION_INTENSITY_ACC 		=> x.intensity = cv.value.map(_.toDouble)
 				case ISOLATION_WINDOW_TARGET_ACC 	=> x.q3 = cv.value.get.toDouble
 				case CHARGE_STATE_ACC 				=> x.q3z = cv.value.get.toInt
 				case _ 								=> {}
@@ -44,44 +46,40 @@ object GhostTransition {
 			for (cv <- conf.cvParams)
 				cv.accession match {
 					case COLLISION_ENERGY_ACC 	=> {
-						x.ce = cv.value.get.toDouble
-						x.instrumentRef = conf.instrumentRef
+						x.ce = cv.value.map(_.toDouble)
+						x.instrumentRef = Some(conf.instrumentRef)
 					}
 					case _ 						=> {}
 				}
 		
-		for(i <- t.product.interpretations)
-			for (cv <- i.cvParams) {
-				var s = ""
-				var o = ""
+		for(i <- t.product.interpretations) {
+			var s = ""
+			var o = ""
+			for (cv <- i.cvParams)
 				cv.accession match {
 					case FRAG_Y_SERIES_ACC 	=> s = "y"
 					case FRAG_B_SERIES_ACC 	=> s = "b"
 					case FRAG_ORDINAL_ACC 	=> o = cv.value.get
 					case _ 						=> {}
 				}
-				if (s != "" && o != "")
-					x.ions += s+o
-			}
+			if (s != "" && o != "")
+				x.ions += s+o
+		}
 		
-		var rt0 = -1.0
-		var rt1 = -1.0
-		var rt2 = -1.0
-		if (t.retentionTime.isDefined)
-			for (cv <- t.retentionTime.get.cvParams)
-				cv.accession match {
-					case LOCAL_RETENTION_TIME_ACC 		=> rt1 = cv.value.get.toDouble
-					case RT_WINDOW_LOWER_OFFSET_ACC 	=> rt0 = cv.value.get.toDouble
-					case RT_WINDOW_UPPER_OFFSET_ACC 	=> rt2 = cv.value.get.toDouble
-					case IRT_NORM_STANDARD_ACC			=> x.irt = cv.value.get.toDouble
-					case _ => {}
-				}
-		x.rtStart 		= rt1 - rt0
-		x.rtEnd 		= rt1 + rt2
-		if (t.peptideRef.isDefined)
-			x.peptideRef = t.peptideRef.get
-		if (t.compoundRef.isDefined)
-			x.compoundRef = t.compoundRef.get
+		for (up <- t.userParams.find(_.name == OPENSWATH_UPARAM_ANNOTATION)) {
+			x.ions += up.value.get
+		}
+		
+		for {
+			rt <- t.retentionTime
+			grt <- GhostRetentionTime.fromRetentionTime(rt)
+		} {
+			x.localRT = Some(grt)
+		}
+		
+		x.peptide = t.peptideRef.map(peps)
+		x.compound = t.compoundRef.map(comps)
+		
 		x.transition 	= t
 		
 		return x
@@ -93,30 +91,37 @@ class GhostTransition {
 	var q1z:Int = 0
 	var q3:Double = -1
 	var q3z:Int = 0
-	var ce:Double = -1
+	var ce:Option[Double] = None
 	var ions = new ArrayBuffer[String]
-	var peptideRef:String = null
-	var compoundRef:String = null
-	var instrumentRef:String = null
-	var rtStart:Double = Double.NaN
-	var rtEnd:Double = Double.NaN
-	var irt:Double = Double.NaN
-	var intensity:Double = -1
+	var peptide:Option[GhostPeptide] = None
+	var compound:Option[GhostCompound] = None
+	var instrumentRef:Option[String] = None
+	var localRT:Option[GhostRetentionTime.RT] = None
+	var intensity:Option[Double] = None
 	var transition:Transition = null
 	var id:String = null
 	
 	import Ghost._
 	
+	def rt:Option[GhostRetentionTime.RT] =
+		localRT.orElse(peptide.flatMap(_.rt))
+	
+	def pepCompId = 
+		peptide.map(_.id).getOrElse("") + compound.map(_.id).getOrElse("") 
+		
+	def isCompound(id:String) = compound.map(_.id == id).getOrElse(false)
+	def isPeptide(id:String) = peptide.map(_.id == id).getOrElse(false)
+		
 	def toTransition = {
 		
 		var t = if (transition != null) transition else new Transition
 		t.id = id
 		
-		if (intensity >= 0)
+		intensity.foreach(x =>
 			t.cvParams.find(_.accession == PRODUCT_ION_INTENSITY_ACC) match {
-				case Some(cv) => cv.value = Some(intensity.toString)
+				case Some(cv) => cv.value = Some(x.toString)
 				case None => t.cvParams += intensityParam
-			}
+			})
 		
 		if (t.precursor == null) t.precursor = new Precursor
 		t.precursor.cvParams.find(_.accession == ISOLATION_WINDOW_TARGET_ACC) match {
@@ -159,15 +164,10 @@ class GhostTransition {
 		t.product.interpretations.clear
 		for (ion <- ions) t.product.interpretations += interp(ion)
 		
-		if ((!java.lang.Double.isNaN(rtStart) && !java.lang.Double.isNaN(rtEnd)) ||
-				!java.lang.Double.isNaN(irt))
-			t.retentionTime = Some(rt)
+		t.retentionTime = localRT.map(_.toRetentionTime)
 		
-			
-		
-		
-		if (peptideRef != null) t.peptideRef = Some(peptideRef)
-		if (compoundRef != null) t.compoundRef = Some(compoundRef)
+		t.peptideRef = peptide.map(_.id)
+		t.compoundRef = compound.map(_.id)
 		
 		t
 	}
@@ -207,7 +207,7 @@ class GhostTransition {
 	
 	
 	
-	def ceConfiguration(instrumentRef:String) = {
+	def ceConfiguration(instrumentRef:Option[String]) = {
 		var cv = new CvParam
 		cv.cvRef = "MS"
 		cv.accession = COLLISION_ENERGY_ACC
@@ -215,7 +215,7 @@ class GhostTransition {
 		cv.value = Some(ce.toString)
 		var c = new Configuration
 		c.cvParams += cv
-		c.instrumentRef = instrumentRef
+		instrumentRef.foreach(c.instrumentRef = _)
 		c
 	}
 	
@@ -241,49 +241,6 @@ class GhostTransition {
 		cv.value = Some(ion.tail)
 		i.cvParams += cv
 		i
-	}
-	
-	
-	
-	def rt = {
-		var x = new RetentionTime
-		
-		if (!java.lang.Double.isNaN(rtStart) && !java.lang.Double.isNaN(rtEnd)) {
-			var mid = (rtEnd + rtStart)/2
-			var offset = rtEnd - mid
-			
-			var cv = new CvParam
-			cv.cvRef = "MS"
-			cv.accession = LOCAL_RETENTION_TIME_ACC
-			cv.name = "local retention time"
-			cv.value = Some(mid.toString)
-			x.cvParams += cv
-			
-			cv = new CvParam
-			cv.cvRef = "MS"
-			cv.accession = RT_WINDOW_LOWER_OFFSET_ACC
-			cv.name = "retention time window lower offset"
-			cv.value = Some(offset.toString)
-			x.cvParams += cv
-			
-			cv = new CvParam
-			cv.cvRef = "MS"
-			cv.accession = RT_WINDOW_UPPER_OFFSET_ACC
-			cv.name = "retention time window upper offset"
-			cv.value = Some(offset.toString)
-			x.cvParams += cv
-		}
-		
-		if (!java.lang.Double.isNaN(irt)) {
-			val cv = new CvParam
-			cv.cvRef = "MS"
-			cv.accession = IRT_NORM_STANDARD_ACC
-			cv.name = "iRT retention time normalization standard"
-			cv.value = Some(irt.toString)
-			x.cvParams += cv
-		}
-		
-		x
 	}
 	
 	
