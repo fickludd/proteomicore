@@ -172,8 +172,9 @@ object WaveletLevel {
                 		   	  *	 low.length / regions.length + JTMath.randInt(nOLevels - w))
                 low(l) = Math.abs(waveLevels(w).low(index))
             }*/
-            for (h <- 0 until high.length) {
+            if (high.length>=3) for (h <- 0 until high.length) {
                 //high[h] = waveLevels[w].high[r.Next(high.Length)];
+
                 var index = (	 regions(h * regions.length / high.length) * high.length / regions.length
                 			   - high.length / 6
                 			   + Random.nextInt(high.length / 3))
