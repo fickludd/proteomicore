@@ -9,6 +9,10 @@ import se.lth.immun.traml._
 
 object GhostTraML {
 	
+	case class PrecKey(mz:Double, pepCompId:String) {
+		override def toString = "%s_%.6f".format(pepCompId, mz)
+	}
+	
 	def fromFile(r:XmlReader, repFreq:Int = 0):GhostTraML = {
 		var x = new GhostTraML
 		
@@ -20,42 +24,36 @@ object GhostTraML {
 		for (p <- x.traml.compoundList.compounds)
 			x.compounds += p.id -> GhostCompound.fromCompound(p)
 		
-		for (t <- x.traml.transitions) {
-			var gt = GhostTransition.fromTransition(t, x.peptides, x.compounds)
-			x += gt
-		}
+		for (t <- x.traml.transitions) 
+			x += GhostTransition.fromTransition(t, x.peptides, x.compounds)
 		
 		if (x.traml.targetList.isDefined)
-			for (t <- x.traml.targetList.get.targetIncludes) {
-				var gt = GhostTarget.fromTarget(t, x.peptides, x.compounds)
-				x += gt
-				val key = gt.pepCompId
-				if (!x.includeGroups.contains(key))
-					x.includeGroups += key -> new ArrayBuffer[GhostTarget]
-				x.includeGroups(key) += gt
-			}
-		
+			for (t <- x.traml.targetList.get.targetIncludes) 
+				x += GhostTarget.fromTarget(t, x.peptides, x.compounds)
+			
 		return x
 	}
 }
 
 
 class GhostTraML {
+	
+	import GhostTraML._
 
 	var traml:TraML = null
 	val proteins = new HashMap[String, GhostProtein]
 	val peptides = new HashMap[String, GhostPeptide]
 	val compounds = new HashMap[String, GhostCompound]
 	val transitions = new ArrayBuffer[GhostTransition]
-	val transitionGroups = new HashMap[(Double, String), ArrayBuffer[GhostTransition]]
+	val transitionGroups = new HashMap[PrecKey, ArrayBuffer[GhostTransition]]
 	val includes = new ArrayBuffer[GhostTarget]
-	val includeGroups = new HashMap[String, ArrayBuffer[GhostTarget]]
+	val includeGroups = new HashMap[PrecKey, ArrayBuffer[GhostTarget]]
 	
 	
 	
 	def +=(gt:GhostTransition) = {
 		transitions += gt
-		val key = (gt.q1, gt.pepCompId)
+		val key = PrecKey(gt.q1, gt.pepCompId)
 		if (!transitionGroups.contains(key))
 			transitionGroups(key) = new ArrayBuffer
 		transitionGroups(key) += gt
@@ -65,7 +63,7 @@ class GhostTraML {
 	
 	def +=(gt:GhostTarget) = {
 		includes += gt
-		val key = gt.pepCompId
+		val key = PrecKey(gt.q1, gt.pepCompId)
 		if (!includeGroups.contains(key))
 			includeGroups(key) = new ArrayBuffer
 		includeGroups(key) += gt
