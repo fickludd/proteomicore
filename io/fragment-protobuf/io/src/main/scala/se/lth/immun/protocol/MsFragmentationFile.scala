@@ -23,8 +23,13 @@ case class BaseFragment(
 		val z:Int,
 		val mz:Option[Double],
 		val intensityStd:Option[Double],
+		val mzErrPPM:Option[Double],
 		val n:Int
-	)
+	) {
+	
+	def normalizeBy(base:Double) =
+		BaseFragment(intensity / base, z, mz, intensityStd.map(_ / base), mzErrPPM, n)
+}
 
 case class SimpleFragment(
 		val base:BaseFragment,
@@ -49,18 +54,24 @@ case class Observation(
 		val fragmentationType:FragmentationType,
 		val z:Int,
 		val ce:Double,
-		val precursorMz:Double,
-		val precursorIntensity:Double,
-		val iRT:Double,
-		val fragBaseIntensity:Double,
-		val qValue:Double,
-		val percentAnnotatedOfMS2tic:Double,
-		val n:Int,
+		val precursorMz:Option[Double],
+		val precursorIntensity:Option[Double],
+		val iRT:Option[Double],
+		val iRTstd:Option[Double],
+		val fragBaseIntensity:Option[Double],
+		val qValue:Option[Double],
+		val percentAnnotatedOfMS2tic:Option[Double],
+		val n:Option[Int],
+		val precursorType:Option[PrecursorType],
+		val precursorIntensityRank:Option[Int],
+		val precursorFeatureApexIntensity:Option[Double],
+		val score:Option[Double],
 		val fragments:Seq[FragmentAnnotation])
 		
 case class AAMolecule(
 		val fileIndex:Int,
 		val sequence:String,
+		val protein:String,
 		val mass:Double,
 		val observations:Seq[Observation])
 	
@@ -91,37 +102,31 @@ object MsFragmentationFile {
 		AAMolecule(
 			fileIndex,
 			f.getSequence,
+			f.getProtein,
 			f.getMass, 
 			f.getObservationList.map(toObservation)
 		)
 	}
 	
-	def toObservation(obs:MSFragmentationProtocol.Observation):Observation = {
-		val precMz =
-			if (obs.hasPrecursorMz) obs.getPrecursorMz else 0.0
-		val precIntensity =
-			if (obs.hasPrecursorIntensity) obs.getPrecursorIntensity else 0.0
-		val iRT =
-			if (obs.hasIRT) obs.getIRT else -1.0
-		val fragBaseIntensity =
-			if (obs.hasFragmentBaseIntensity) obs.getFragmentBaseIntensity else -1.0
-		val qValue =
-			if (obs.hasQValue) obs.getQValue else -1.0
-		val percentAnnotatedOfMS2tic =
-			if (obs.hasPercentAnnotatedOfMS2Tic) obs.getPercentAnnotatedOfMS2Tic else -1.0
+	def toObservation(obs:MSFragmentationProtocol.Observation):Observation = 
 		Observation(
 				obs.getType,
 				obs.getCharge,
 				obs.getCe,
-				precMz,
-				precIntensity,
-				iRT,
-				fragBaseIntensity,
-				qValue,
-				percentAnnotatedOfMS2tic,
-				obs.getN,
+				if (obs.hasPrecursorMz) 		Some(obs.getPrecursorMz) 		else None,
+				if (obs.hasPrecursorIntensity) 	Some(obs.getPrecursorIntensity) else None,
+				if (obs.hasIRT) 				Some(obs.getIRT) 				else None,
+				if (obs.hasIRTstd) 				Some(obs.getIRTstd)				else None,
+				if (obs.hasFragmentBaseIntensity) 	Some(obs.getFragmentBaseIntensity) 		else None,
+				if (obs.hasQValue) 					Some(obs.getQValue) 					else None,
+				if (obs.hasPercentAnnotatedOfMS2Tic) Some(obs.getPercentAnnotatedOfMS2Tic) 	else None,
+				if (obs.hasN) 						Some(obs.getN) 							else None,
+				if (obs.hasPrecursorType) 			Some(obs.getPrecursorType) 				else None,
+				if (obs.hasPrecursorIntensityRank) 	Some(obs.getPrecursorIntensityRank) 	else None,
+				if (obs.hasPrecursorFeatureApexIntensity) Some(obs.getPrecursorFeatureApexIntensity) else None,
+				if (obs.hasScore) Some(obs.getScore) else None,
 				obs.getFragmentList.map(toFragment))
-	}
+	
 	
 	def toFragment(f:MSFragmentationProtocol.Fragment):FragmentAnnotation = {
 		f.getType match {
@@ -141,6 +146,7 @@ object MsFragmentationFile {
 				f.getCharge,
 				if (f.hasMz) Some(f.getMz) else None,
 				if (f.hasIntensityStd) Some(f.getIntensityStd) else None,
+				if (f.hasMzErrPPM) Some(f.getMzErrPPM) else None,
 				f.getN
 			)
 	
@@ -167,6 +173,7 @@ object MsFragmentationFile {
 	def buildAAMolecule(x:AAMolecule):MSFragmentationProtocol.AAMolecule = {
 		val b = MSFragmentationProtocol.AAMolecule.newBuilder
 			.setSequence(x.sequence)
+			.setProtein(x.protein)
 			.setMass(x.mass)
 		for (obs <- x.observations) b.addObservation(buildObservation(obs))
 		b.build
@@ -176,20 +183,29 @@ object MsFragmentationFile {
 		val b = MSFragmentationProtocol.Observation.newBuilder
 			.setType(obs.fragmentationType)
 			.setCharge(obs.z)
-			.setCe(obs.ce)
-			.setPrecursorMz(obs.precursorMz)
-			.setIRT(obs.iRT)
-			.setPrecursorIntensity(obs.precursorIntensity)
+			.setCe(obs.ce.toFloat)
+		obs.precursorMz.foreach(b.setPrecursorMz(_))
+		obs.precursorIntensity.foreach(x => b.setPrecursorIntensity(x.toFloat))
+		obs.iRT.foreach(x => b.setIRT(x.toFloat))
+		obs.iRTstd.foreach(x => b.setIRTstd(x.toFloat))
+		obs.fragBaseIntensity.foreach(x => b.setFragmentBaseIntensity(x.toFloat))
+		obs.qValue.foreach(x => b.setQValue(x.toFloat))
+		obs.percentAnnotatedOfMS2tic.foreach(x => b.setPercentAnnotatedOfMS2Tic(x.toFloat))
+		obs.n.foreach(b.setN(_))
+		obs.precursorType.foreach(b.setPrecursorType(_))
+		obs.precursorIntensityRank.foreach(b.setPrecursorIntensityRank(_))
+		obs.precursorFeatureApexIntensity.foreach(x => b.setPrecursorFeatureApexIntensity(x.toFloat))
+		obs.score.foreach(x => b.setScore(x.toFloat))
 		for (f <- obs.fragments) b.addFragment(buildFragment(f))
 		b.build
 	}
 	
 	def buildFragment(f:FragmentAnnotation):Fragment = {
 		val b = Fragment.newBuilder
-		b.setIntensity(f.base.intensity)
+		b.setIntensity(f.base.intensity.toFloat)
 		b.setCharge(f.base.z)
 		f.base.mz.foreach(x => b.setMz(x))
-		f.base.intensityStd.foreach(x => b.setIntensityStd(x))
+		f.base.intensityStd.foreach(x => b.setIntensityStd(x.toFloat))
 		if (f.base.n != 1)
 			b.setN(f.base.n)
 		
