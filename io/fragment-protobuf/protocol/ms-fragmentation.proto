@@ -14,13 +14,21 @@ option java_outer_classname = "MSFragmentationProtocol";
 	
 	If a AAMolecule is a cross-link, use the Taxlink crosslinking annotation.
 	Also set the 'origPeptide' property of fragments to annotate which of the 
-	crosslinked peptides the fragment came from.
+	crosslinked peptides the fragment came from, with the first peptide 
+	being '1' in the order of the aaMol sequence.
 */
 
 message AAMolecule {
 	required string sequence = 1;
 	optional double mass = 2;
+	optional string protein = 3 [default = ""];
 	repeated Observation observation = 10;
+}
+
+enum PrecursorType {
+	ORIG = 0;
+	FEAT = 1;
+	COMPL_FRAG = 2;
 }
 
 enum FragmentationType {
@@ -40,7 +48,7 @@ enum FragmentType {
 }
 
 message Fragment {
-	required double intensity = 1;
+	required float intensity = 1;
 	required FragmentType type = 2;
 	optional double mz = 3;
 	optional uint32 ordinal = 4;
@@ -48,21 +56,27 @@ message Fragment {
 	optional uint32 internalFirst = 6;
 	optional uint32 internalLast = 7;
 	optional uint32 origPeptide = 8;
-	optional double intensityStd = 9;
+	optional float intensityStd = 9;
 	optional uint32 n = 10 [default = 1];
+	optional float mzErrPPM = 11 [default = -1];
 }
 
 message Observation {
 	required FragmentationType type = 1;
 	required int32 charge = 2;
-	required double ce = 3;
-	optional double precursorMz = 4;
-	optional double precursorIntensity = 5;
-	optional double iRT = 6;
-	optional double fragmentBaseIntensity = 7;
-	optional double qValue = 8;
-	optional double percentAnnotatedOfMS2tic = 9;
+	required float ce = 3;
+	optional double precursorMz = 4 [default = 0.0];
+	optional float precursorIntensity = 5 [default = 0.0];
+	optional float iRT = 6 [default = -1000000.0];
+	optional float iRTstd = 14 [default = 0.0];
+	optional float fragmentBaseIntensity = 7 [default = -1.0];
+	optional float qValue = 8 [default = -1.0];
+	optional float percentAnnotatedOfMS2tic = 9 [default = -1.0];
 	optional uint32 n = 10 [default = 1];
+	optional PrecursorType precursorType = 11 [default = ORIG];
+	optional uint32 precursorIntensityRank = 12 [default = 1];
+	optional float precursorFeatureApexIntensity = 13 [default = 0.0];
+	optional float score = 16 [default = 0.0];
 	repeated Fragment fragment = 15;
 }
 
