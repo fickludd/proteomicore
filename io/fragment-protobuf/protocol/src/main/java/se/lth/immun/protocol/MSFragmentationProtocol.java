@@ -9,6 +9,97 @@ public final class MSFragmentationProtocol {
       com.google.protobuf.ExtensionRegistry registry) {
   }
   /**
+   * Protobuf enum {@code se.lth.immun.protocol.PrecursorType}
+   */
+  public enum PrecursorType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>ORIG = 0;</code>
+     */
+    ORIG(0, 0),
+    /**
+     * <code>FEAT = 1;</code>
+     */
+    FEAT(1, 1),
+    /**
+     * <code>COMPL_FRAG = 2;</code>
+     */
+    COMPL_FRAG(2, 2),
+    ;
+
+    /**
+     * <code>ORIG = 0;</code>
+     */
+    public static final int ORIG_VALUE = 0;
+    /**
+     * <code>FEAT = 1;</code>
+     */
+    public static final int FEAT_VALUE = 1;
+    /**
+     * <code>COMPL_FRAG = 2;</code>
+     */
+    public static final int COMPL_FRAG_VALUE = 2;
+
+
+    public final int getNumber() { return value; }
+
+    public static PrecursorType valueOf(int value) {
+      switch (value) {
+        case 0: return ORIG;
+        case 1: return FEAT;
+        case 2: return COMPL_FRAG;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<PrecursorType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<PrecursorType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<PrecursorType>() {
+            public PrecursorType findValueByNumber(int number) {
+              return PrecursorType.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return se.lth.immun.protocol.MSFragmentationProtocol.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final PrecursorType[] VALUES = values();
+
+    public static PrecursorType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private PrecursorType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:se.lth.immun.protocol.PrecursorType)
+  }
+
+  /**
    * Protobuf enum {@code se.lth.immun.protocol.FragmentationType}
    */
   public enum FragmentationType
@@ -74,7 +165,7 @@ public final class MSFragmentationProtocol {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return se.lth.immun.protocol.MSFragmentationProtocol.getDescriptor().getEnumTypes().get(0);
+      return se.lth.immun.protocol.MSFragmentationProtocol.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final FragmentationType[] VALUES = values();
@@ -201,7 +292,7 @@ public final class MSFragmentationProtocol {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return se.lth.immun.protocol.MSFragmentationProtocol.getDescriptor().getEnumTypes().get(1);
+      return se.lth.immun.protocol.MSFragmentationProtocol.getDescriptor().getEnumTypes().get(2);
     }
 
     private static final FragmentType[] VALUES = values();
@@ -252,6 +343,20 @@ public final class MSFragmentationProtocol {
      * <code>optional double mass = 2;</code>
      */
     double getMass();
+
+    /**
+     * <code>optional string protein = 3 [default = ""];</code>
+     */
+    boolean hasProtein();
+    /**
+     * <code>optional string protein = 3 [default = ""];</code>
+     */
+    java.lang.String getProtein();
+    /**
+     * <code>optional string protein = 3 [default = ""];</code>
+     */
+    com.google.protobuf.ByteString
+        getProteinBytes();
 
     /**
      * <code>repeated .se.lth.immun.protocol.Observation observation = 10;</code>
@@ -340,10 +445,16 @@ public final class MSFragmentationProtocol {
               mass_ = input.readDouble();
               break;
             }
+            case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000004;
+              protein_ = bs;
+              break;
+            }
             case 82: {
-              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
                 observation_ = new java.util.ArrayList<se.lth.immun.protocol.MSFragmentationProtocol.Observation>();
-                mutable_bitField0_ |= 0x00000004;
+                mutable_bitField0_ |= 0x00000008;
               }
               observation_.add(input.readMessage(se.lth.immun.protocol.MSFragmentationProtocol.Observation.PARSER, extensionRegistry));
               break;
@@ -356,7 +467,7 @@ public final class MSFragmentationProtocol {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
           observation_ = java.util.Collections.unmodifiableList(observation_);
         }
         this.unknownFields = unknownFields.build();
@@ -448,6 +559,48 @@ public final class MSFragmentationProtocol {
       return mass_;
     }
 
+    public static final int PROTEIN_FIELD_NUMBER = 3;
+    private java.lang.Object protein_;
+    /**
+     * <code>optional string protein = 3 [default = ""];</code>
+     */
+    public boolean hasProtein() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional string protein = 3 [default = ""];</code>
+     */
+    public java.lang.String getProtein() {
+      java.lang.Object ref = protein_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          protein_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string protein = 3 [default = ""];</code>
+     */
+    public com.google.protobuf.ByteString
+        getProteinBytes() {
+      java.lang.Object ref = protein_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        protein_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int OBSERVATION_FIELD_NUMBER = 10;
     private java.util.List<se.lth.immun.protocol.MSFragmentationProtocol.Observation> observation_;
     /**
@@ -486,6 +639,7 @@ public final class MSFragmentationProtocol {
     private void initFields() {
       sequence_ = "";
       mass_ = 0D;
+      protein_ = "";
       observation_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
@@ -517,6 +671,9 @@ public final class MSFragmentationProtocol {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeDouble(2, mass_);
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getProteinBytes());
+      }
       for (int i = 0; i < observation_.size(); i++) {
         output.writeMessage(10, observation_.get(i));
       }
@@ -536,6 +693,10 @@ public final class MSFragmentationProtocol {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(2, mass_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getProteinBytes());
       }
       for (int i = 0; i < observation_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -663,9 +824,11 @@ public final class MSFragmentationProtocol {
         bitField0_ = (bitField0_ & ~0x00000001);
         mass_ = 0D;
         bitField0_ = (bitField0_ & ~0x00000002);
+        protein_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
         if (observationBuilder_ == null) {
           observation_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000008);
         } else {
           observationBuilder_.clear();
         }
@@ -705,10 +868,14 @@ public final class MSFragmentationProtocol {
           to_bitField0_ |= 0x00000002;
         }
         result.mass_ = mass_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.protein_ = protein_;
         if (observationBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          if (((bitField0_ & 0x00000008) == 0x00000008)) {
             observation_ = java.util.Collections.unmodifiableList(observation_);
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000008);
           }
           result.observation_ = observation_;
         } else {
@@ -738,11 +905,16 @@ public final class MSFragmentationProtocol {
         if (other.hasMass()) {
           setMass(other.getMass());
         }
+        if (other.hasProtein()) {
+          bitField0_ |= 0x00000004;
+          protein_ = other.protein_;
+          onChanged();
+        }
         if (observationBuilder_ == null) {
           if (!other.observation_.isEmpty()) {
             if (observation_.isEmpty()) {
               observation_ = other.observation_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000008);
             } else {
               ensureObservationIsMutable();
               observation_.addAll(other.observation_);
@@ -755,7 +927,7 @@ public final class MSFragmentationProtocol {
               observationBuilder_.dispose();
               observationBuilder_ = null;
               observation_ = other.observation_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000008);
               observationBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getObservationFieldBuilder() : null;
@@ -909,12 +1081,88 @@ public final class MSFragmentationProtocol {
         return this;
       }
 
+      private java.lang.Object protein_ = "";
+      /**
+       * <code>optional string protein = 3 [default = ""];</code>
+       */
+      public boolean hasProtein() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional string protein = 3 [default = ""];</code>
+       */
+      public java.lang.String getProtein() {
+        java.lang.Object ref = protein_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            protein_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string protein = 3 [default = ""];</code>
+       */
+      public com.google.protobuf.ByteString
+          getProteinBytes() {
+        java.lang.Object ref = protein_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          protein_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string protein = 3 [default = ""];</code>
+       */
+      public Builder setProtein(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        protein_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string protein = 3 [default = ""];</code>
+       */
+      public Builder clearProtein() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        protein_ = getDefaultInstance().getProtein();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string protein = 3 [default = ""];</code>
+       */
+      public Builder setProteinBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        protein_ = value;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<se.lth.immun.protocol.MSFragmentationProtocol.Observation> observation_ =
         java.util.Collections.emptyList();
       private void ensureObservationIsMutable() {
-        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
           observation_ = new java.util.ArrayList<se.lth.immun.protocol.MSFragmentationProtocol.Observation>(observation_);
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000008;
          }
       }
 
@@ -1064,7 +1312,7 @@ public final class MSFragmentationProtocol {
       public Builder clearObservation() {
         if (observationBuilder_ == null) {
           observation_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000008);
           onChanged();
         } else {
           observationBuilder_.clear();
@@ -1141,7 +1389,7 @@ public final class MSFragmentationProtocol {
           observationBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               se.lth.immun.protocol.MSFragmentationProtocol.Observation, se.lth.immun.protocol.MSFragmentationProtocol.Observation.Builder, se.lth.immun.protocol.MSFragmentationProtocol.ObservationOrBuilder>(
                   observation_,
-                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  ((bitField0_ & 0x00000008) == 0x00000008),
                   getParentForChildren(),
                   isClean());
           observation_ = null;
@@ -1165,13 +1413,13 @@ public final class MSFragmentationProtocol {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required double intensity = 1;</code>
+     * <code>required float intensity = 1;</code>
      */
     boolean hasIntensity();
     /**
-     * <code>required double intensity = 1;</code>
+     * <code>required float intensity = 1;</code>
      */
-    double getIntensity();
+    float getIntensity();
 
     /**
      * <code>required .se.lth.immun.protocol.FragmentType type = 2;</code>
@@ -1237,13 +1485,13 @@ public final class MSFragmentationProtocol {
     int getOrigPeptide();
 
     /**
-     * <code>optional double intensityStd = 9;</code>
+     * <code>optional float intensityStd = 9;</code>
      */
     boolean hasIntensityStd();
     /**
-     * <code>optional double intensityStd = 9;</code>
+     * <code>optional float intensityStd = 9;</code>
      */
-    double getIntensityStd();
+    float getIntensityStd();
 
     /**
      * <code>optional uint32 n = 10 [default = 1];</code>
@@ -1253,6 +1501,15 @@ public final class MSFragmentationProtocol {
      * <code>optional uint32 n = 10 [default = 1];</code>
      */
     int getN();
+
+    /**
+     * <code>optional float mzErrPPM = 11 [default = -1];</code>
+     */
+    boolean hasMzErrPPM();
+    /**
+     * <code>optional float mzErrPPM = 11 [default = -1];</code>
+     */
+    float getMzErrPPM();
   }
   /**
    * Protobuf type {@code se.lth.immun.protocol.Fragment}
@@ -1306,9 +1563,9 @@ public final class MSFragmentationProtocol {
               }
               break;
             }
-            case 9: {
+            case 13: {
               bitField0_ |= 0x00000001;
-              intensity_ = input.readDouble();
+              intensity_ = input.readFloat();
               break;
             }
             case 16: {
@@ -1352,14 +1609,19 @@ public final class MSFragmentationProtocol {
               origPeptide_ = input.readUInt32();
               break;
             }
-            case 73: {
+            case 77: {
               bitField0_ |= 0x00000100;
-              intensityStd_ = input.readDouble();
+              intensityStd_ = input.readFloat();
               break;
             }
             case 80: {
               bitField0_ |= 0x00000200;
               n_ = input.readUInt32();
+              break;
+            }
+            case 93: {
+              bitField0_ |= 0x00000400;
+              mzErrPPM_ = input.readFloat();
               break;
             }
           }
@@ -1403,17 +1665,17 @@ public final class MSFragmentationProtocol {
 
     private int bitField0_;
     public static final int INTENSITY_FIELD_NUMBER = 1;
-    private double intensity_;
+    private float intensity_;
     /**
-     * <code>required double intensity = 1;</code>
+     * <code>required float intensity = 1;</code>
      */
     public boolean hasIntensity() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required double intensity = 1;</code>
+     * <code>required float intensity = 1;</code>
      */
-    public double getIntensity() {
+    public float getIntensity() {
       return intensity_;
     }
 
@@ -1523,17 +1785,17 @@ public final class MSFragmentationProtocol {
     }
 
     public static final int INTENSITYSTD_FIELD_NUMBER = 9;
-    private double intensityStd_;
+    private float intensityStd_;
     /**
-     * <code>optional double intensityStd = 9;</code>
+     * <code>optional float intensityStd = 9;</code>
      */
     public boolean hasIntensityStd() {
       return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
-     * <code>optional double intensityStd = 9;</code>
+     * <code>optional float intensityStd = 9;</code>
      */
-    public double getIntensityStd() {
+    public float getIntensityStd() {
       return intensityStd_;
     }
 
@@ -1552,8 +1814,23 @@ public final class MSFragmentationProtocol {
       return n_;
     }
 
+    public static final int MZERRPPM_FIELD_NUMBER = 11;
+    private float mzErrPPM_;
+    /**
+     * <code>optional float mzErrPPM = 11 [default = -1];</code>
+     */
+    public boolean hasMzErrPPM() {
+      return ((bitField0_ & 0x00000400) == 0x00000400);
+    }
+    /**
+     * <code>optional float mzErrPPM = 11 [default = -1];</code>
+     */
+    public float getMzErrPPM() {
+      return mzErrPPM_;
+    }
+
     private void initFields() {
-      intensity_ = 0D;
+      intensity_ = 0F;
       type_ = se.lth.immun.protocol.MSFragmentationProtocol.FragmentType.A;
       mz_ = 0D;
       ordinal_ = 0;
@@ -1561,8 +1838,9 @@ public final class MSFragmentationProtocol {
       internalFirst_ = 0;
       internalLast_ = 0;
       origPeptide_ = 0;
-      intensityStd_ = 0D;
+      intensityStd_ = 0F;
       n_ = 1;
+      mzErrPPM_ = -1F;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1586,7 +1864,7 @@ public final class MSFragmentationProtocol {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeDouble(1, intensity_);
+        output.writeFloat(1, intensity_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeEnum(2, type_.getNumber());
@@ -1610,10 +1888,13 @@ public final class MSFragmentationProtocol {
         output.writeUInt32(8, origPeptide_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeDouble(9, intensityStd_);
+        output.writeFloat(9, intensityStd_);
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         output.writeUInt32(10, n_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        output.writeFloat(11, mzErrPPM_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1626,7 +1907,7 @@ public final class MSFragmentationProtocol {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(1, intensity_);
+          .computeFloatSize(1, intensity_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
@@ -1658,11 +1939,15 @@ public final class MSFragmentationProtocol {
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(9, intensityStd_);
+          .computeFloatSize(9, intensityStd_);
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(10, n_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(11, mzErrPPM_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1781,7 +2066,7 @@ public final class MSFragmentationProtocol {
 
       public Builder clear() {
         super.clear();
-        intensity_ = 0D;
+        intensity_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000001);
         type_ = se.lth.immun.protocol.MSFragmentationProtocol.FragmentType.A;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -1797,10 +2082,12 @@ public final class MSFragmentationProtocol {
         bitField0_ = (bitField0_ & ~0x00000040);
         origPeptide_ = 0;
         bitField0_ = (bitField0_ & ~0x00000080);
-        intensityStd_ = 0D;
+        intensityStd_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000100);
         n_ = 1;
         bitField0_ = (bitField0_ & ~0x00000200);
+        mzErrPPM_ = -1F;
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
 
@@ -1869,6 +2156,10 @@ public final class MSFragmentationProtocol {
           to_bitField0_ |= 0x00000200;
         }
         result.n_ = n_;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000400;
+        }
+        result.mzErrPPM_ = mzErrPPM_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1915,6 +2206,9 @@ public final class MSFragmentationProtocol {
         if (other.hasN()) {
           setN(other.getN());
         }
+        if (other.hasMzErrPPM()) {
+          setMzErrPPM(other.getMzErrPPM());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -1950,34 +2244,34 @@ public final class MSFragmentationProtocol {
       }
       private int bitField0_;
 
-      private double intensity_ ;
+      private float intensity_ ;
       /**
-       * <code>required double intensity = 1;</code>
+       * <code>required float intensity = 1;</code>
        */
       public boolean hasIntensity() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required double intensity = 1;</code>
+       * <code>required float intensity = 1;</code>
        */
-      public double getIntensity() {
+      public float getIntensity() {
         return intensity_;
       }
       /**
-       * <code>required double intensity = 1;</code>
+       * <code>required float intensity = 1;</code>
        */
-      public Builder setIntensity(double value) {
+      public Builder setIntensity(float value) {
         bitField0_ |= 0x00000001;
         intensity_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required double intensity = 1;</code>
+       * <code>required float intensity = 1;</code>
        */
       public Builder clearIntensity() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        intensity_ = 0D;
+        intensity_ = 0F;
         onChanged();
         return this;
       }
@@ -2209,34 +2503,34 @@ public final class MSFragmentationProtocol {
         return this;
       }
 
-      private double intensityStd_ ;
+      private float intensityStd_ ;
       /**
-       * <code>optional double intensityStd = 9;</code>
+       * <code>optional float intensityStd = 9;</code>
        */
       public boolean hasIntensityStd() {
         return ((bitField0_ & 0x00000100) == 0x00000100);
       }
       /**
-       * <code>optional double intensityStd = 9;</code>
+       * <code>optional float intensityStd = 9;</code>
        */
-      public double getIntensityStd() {
+      public float getIntensityStd() {
         return intensityStd_;
       }
       /**
-       * <code>optional double intensityStd = 9;</code>
+       * <code>optional float intensityStd = 9;</code>
        */
-      public Builder setIntensityStd(double value) {
+      public Builder setIntensityStd(float value) {
         bitField0_ |= 0x00000100;
         intensityStd_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double intensityStd = 9;</code>
+       * <code>optional float intensityStd = 9;</code>
        */
       public Builder clearIntensityStd() {
         bitField0_ = (bitField0_ & ~0x00000100);
-        intensityStd_ = 0D;
+        intensityStd_ = 0F;
         onChanged();
         return this;
       }
@@ -2269,6 +2563,38 @@ public final class MSFragmentationProtocol {
       public Builder clearN() {
         bitField0_ = (bitField0_ & ~0x00000200);
         n_ = 1;
+        onChanged();
+        return this;
+      }
+
+      private float mzErrPPM_ = -1F;
+      /**
+       * <code>optional float mzErrPPM = 11 [default = -1];</code>
+       */
+      public boolean hasMzErrPPM() {
+        return ((bitField0_ & 0x00000400) == 0x00000400);
+      }
+      /**
+       * <code>optional float mzErrPPM = 11 [default = -1];</code>
+       */
+      public float getMzErrPPM() {
+        return mzErrPPM_;
+      }
+      /**
+       * <code>optional float mzErrPPM = 11 [default = -1];</code>
+       */
+      public Builder setMzErrPPM(float value) {
+        bitField0_ |= 0x00000400;
+        mzErrPPM_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional float mzErrPPM = 11 [default = -1];</code>
+       */
+      public Builder clearMzErrPPM() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        mzErrPPM_ = -1F;
         onChanged();
         return this;
       }
@@ -2307,67 +2633,76 @@ public final class MSFragmentationProtocol {
     int getCharge();
 
     /**
-     * <code>required double ce = 3;</code>
+     * <code>required float ce = 3;</code>
      */
     boolean hasCe();
     /**
-     * <code>required double ce = 3;</code>
+     * <code>required float ce = 3;</code>
      */
-    double getCe();
+    float getCe();
 
     /**
-     * <code>optional double precursorMz = 4;</code>
+     * <code>optional double precursorMz = 4 [default = 0];</code>
      */
     boolean hasPrecursorMz();
     /**
-     * <code>optional double precursorMz = 4;</code>
+     * <code>optional double precursorMz = 4 [default = 0];</code>
      */
     double getPrecursorMz();
 
     /**
-     * <code>optional double precursorIntensity = 5;</code>
+     * <code>optional float precursorIntensity = 5 [default = 0];</code>
      */
     boolean hasPrecursorIntensity();
     /**
-     * <code>optional double precursorIntensity = 5;</code>
+     * <code>optional float precursorIntensity = 5 [default = 0];</code>
      */
-    double getPrecursorIntensity();
+    float getPrecursorIntensity();
 
     /**
-     * <code>optional double iRT = 6;</code>
+     * <code>optional float iRT = 6 [default = -1e+06];</code>
      */
     boolean hasIRT();
     /**
-     * <code>optional double iRT = 6;</code>
+     * <code>optional float iRT = 6 [default = -1e+06];</code>
      */
-    double getIRT();
+    float getIRT();
 
     /**
-     * <code>optional double fragmentBaseIntensity = 7;</code>
+     * <code>optional float iRTstd = 14 [default = 0];</code>
+     */
+    boolean hasIRTstd();
+    /**
+     * <code>optional float iRTstd = 14 [default = 0];</code>
+     */
+    float getIRTstd();
+
+    /**
+     * <code>optional float fragmentBaseIntensity = 7 [default = -1];</code>
      */
     boolean hasFragmentBaseIntensity();
     /**
-     * <code>optional double fragmentBaseIntensity = 7;</code>
+     * <code>optional float fragmentBaseIntensity = 7 [default = -1];</code>
      */
-    double getFragmentBaseIntensity();
+    float getFragmentBaseIntensity();
 
     /**
-     * <code>optional double qValue = 8;</code>
+     * <code>optional float qValue = 8 [default = -1];</code>
      */
     boolean hasQValue();
     /**
-     * <code>optional double qValue = 8;</code>
+     * <code>optional float qValue = 8 [default = -1];</code>
      */
-    double getQValue();
+    float getQValue();
 
     /**
-     * <code>optional double percentAnnotatedOfMS2tic = 9;</code>
+     * <code>optional float percentAnnotatedOfMS2tic = 9 [default = -1];</code>
      */
     boolean hasPercentAnnotatedOfMS2Tic();
     /**
-     * <code>optional double percentAnnotatedOfMS2tic = 9;</code>
+     * <code>optional float percentAnnotatedOfMS2tic = 9 [default = -1];</code>
      */
-    double getPercentAnnotatedOfMS2Tic();
+    float getPercentAnnotatedOfMS2Tic();
 
     /**
      * <code>optional uint32 n = 10 [default = 1];</code>
@@ -2377,6 +2712,42 @@ public final class MSFragmentationProtocol {
      * <code>optional uint32 n = 10 [default = 1];</code>
      */
     int getN();
+
+    /**
+     * <code>optional .se.lth.immun.protocol.PrecursorType precursorType = 11 [default = ORIG];</code>
+     */
+    boolean hasPrecursorType();
+    /**
+     * <code>optional .se.lth.immun.protocol.PrecursorType precursorType = 11 [default = ORIG];</code>
+     */
+    se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType getPrecursorType();
+
+    /**
+     * <code>optional uint32 precursorIntensityRank = 12 [default = 1];</code>
+     */
+    boolean hasPrecursorIntensityRank();
+    /**
+     * <code>optional uint32 precursorIntensityRank = 12 [default = 1];</code>
+     */
+    int getPrecursorIntensityRank();
+
+    /**
+     * <code>optional float precursorFeatureApexIntensity = 13 [default = 0];</code>
+     */
+    boolean hasPrecursorFeatureApexIntensity();
+    /**
+     * <code>optional float precursorFeatureApexIntensity = 13 [default = 0];</code>
+     */
+    float getPrecursorFeatureApexIntensity();
+
+    /**
+     * <code>optional float score = 16 [default = 0];</code>
+     */
+    boolean hasScore();
+    /**
+     * <code>optional float score = 16 [default = 0];</code>
+     */
+    float getScore();
 
     /**
      * <code>repeated .se.lth.immun.protocol.Fragment fragment = 15;</code>
@@ -2470,9 +2841,9 @@ public final class MSFragmentationProtocol {
               charge_ = input.readInt32();
               break;
             }
-            case 25: {
+            case 29: {
               bitField0_ |= 0x00000004;
-              ce_ = input.readDouble();
+              ce_ = input.readFloat();
               break;
             }
             case 33: {
@@ -2480,42 +2851,73 @@ public final class MSFragmentationProtocol {
               precursorMz_ = input.readDouble();
               break;
             }
-            case 41: {
+            case 45: {
               bitField0_ |= 0x00000010;
-              precursorIntensity_ = input.readDouble();
+              precursorIntensity_ = input.readFloat();
               break;
             }
-            case 49: {
+            case 53: {
               bitField0_ |= 0x00000020;
-              iRT_ = input.readDouble();
+              iRT_ = input.readFloat();
               break;
             }
-            case 57: {
-              bitField0_ |= 0x00000040;
-              fragmentBaseIntensity_ = input.readDouble();
-              break;
-            }
-            case 65: {
+            case 61: {
               bitField0_ |= 0x00000080;
-              qValue_ = input.readDouble();
+              fragmentBaseIntensity_ = input.readFloat();
               break;
             }
-            case 73: {
+            case 69: {
               bitField0_ |= 0x00000100;
-              percentAnnotatedOfMS2Tic_ = input.readDouble();
+              qValue_ = input.readFloat();
+              break;
+            }
+            case 77: {
+              bitField0_ |= 0x00000200;
+              percentAnnotatedOfMS2Tic_ = input.readFloat();
               break;
             }
             case 80: {
-              bitField0_ |= 0x00000200;
+              bitField0_ |= 0x00000400;
               n_ = input.readUInt32();
               break;
             }
+            case 88: {
+              int rawValue = input.readEnum();
+              se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType value = se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(11, rawValue);
+              } else {
+                bitField0_ |= 0x00000800;
+                precursorType_ = value;
+              }
+              break;
+            }
+            case 96: {
+              bitField0_ |= 0x00001000;
+              precursorIntensityRank_ = input.readUInt32();
+              break;
+            }
+            case 109: {
+              bitField0_ |= 0x00002000;
+              precursorFeatureApexIntensity_ = input.readFloat();
+              break;
+            }
+            case 117: {
+              bitField0_ |= 0x00000040;
+              iRTstd_ = input.readFloat();
+              break;
+            }
             case 122: {
-              if (!((mutable_bitField0_ & 0x00000400) == 0x00000400)) {
+              if (!((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
                 fragment_ = new java.util.ArrayList<se.lth.immun.protocol.MSFragmentationProtocol.Fragment>();
-                mutable_bitField0_ |= 0x00000400;
+                mutable_bitField0_ |= 0x00008000;
               }
               fragment_.add(input.readMessage(se.lth.immun.protocol.MSFragmentationProtocol.Fragment.PARSER, extensionRegistry));
+              break;
+            }
+            case 133: {
+              bitField0_ |= 0x00004000;
+              score_ = input.readFloat();
               break;
             }
           }
@@ -2526,7 +2928,7 @@ public final class MSFragmentationProtocol {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000400) == 0x00000400)) {
+        if (((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
           fragment_ = java.util.Collections.unmodifiableList(fragment_);
         }
         this.unknownFields = unknownFields.build();
@@ -2592,107 +2994,122 @@ public final class MSFragmentationProtocol {
     }
 
     public static final int CE_FIELD_NUMBER = 3;
-    private double ce_;
+    private float ce_;
     /**
-     * <code>required double ce = 3;</code>
+     * <code>required float ce = 3;</code>
      */
     public boolean hasCe() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required double ce = 3;</code>
+     * <code>required float ce = 3;</code>
      */
-    public double getCe() {
+    public float getCe() {
       return ce_;
     }
 
     public static final int PRECURSORMZ_FIELD_NUMBER = 4;
     private double precursorMz_;
     /**
-     * <code>optional double precursorMz = 4;</code>
+     * <code>optional double precursorMz = 4 [default = 0];</code>
      */
     public boolean hasPrecursorMz() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>optional double precursorMz = 4;</code>
+     * <code>optional double precursorMz = 4 [default = 0];</code>
      */
     public double getPrecursorMz() {
       return precursorMz_;
     }
 
     public static final int PRECURSORINTENSITY_FIELD_NUMBER = 5;
-    private double precursorIntensity_;
+    private float precursorIntensity_;
     /**
-     * <code>optional double precursorIntensity = 5;</code>
+     * <code>optional float precursorIntensity = 5 [default = 0];</code>
      */
     public boolean hasPrecursorIntensity() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional double precursorIntensity = 5;</code>
+     * <code>optional float precursorIntensity = 5 [default = 0];</code>
      */
-    public double getPrecursorIntensity() {
+    public float getPrecursorIntensity() {
       return precursorIntensity_;
     }
 
     public static final int IRT_FIELD_NUMBER = 6;
-    private double iRT_;
+    private float iRT_;
     /**
-     * <code>optional double iRT = 6;</code>
+     * <code>optional float iRT = 6 [default = -1e+06];</code>
      */
     public boolean hasIRT() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional double iRT = 6;</code>
+     * <code>optional float iRT = 6 [default = -1e+06];</code>
      */
-    public double getIRT() {
+    public float getIRT() {
       return iRT_;
     }
 
-    public static final int FRAGMENTBASEINTENSITY_FIELD_NUMBER = 7;
-    private double fragmentBaseIntensity_;
+    public static final int IRTSTD_FIELD_NUMBER = 14;
+    private float iRTstd_;
     /**
-     * <code>optional double fragmentBaseIntensity = 7;</code>
+     * <code>optional float iRTstd = 14 [default = 0];</code>
      */
-    public boolean hasFragmentBaseIntensity() {
+    public boolean hasIRTstd() {
       return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>optional double fragmentBaseIntensity = 7;</code>
+     * <code>optional float iRTstd = 14 [default = 0];</code>
      */
-    public double getFragmentBaseIntensity() {
+    public float getIRTstd() {
+      return iRTstd_;
+    }
+
+    public static final int FRAGMENTBASEINTENSITY_FIELD_NUMBER = 7;
+    private float fragmentBaseIntensity_;
+    /**
+     * <code>optional float fragmentBaseIntensity = 7 [default = -1];</code>
+     */
+    public boolean hasFragmentBaseIntensity() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional float fragmentBaseIntensity = 7 [default = -1];</code>
+     */
+    public float getFragmentBaseIntensity() {
       return fragmentBaseIntensity_;
     }
 
     public static final int QVALUE_FIELD_NUMBER = 8;
-    private double qValue_;
+    private float qValue_;
     /**
-     * <code>optional double qValue = 8;</code>
+     * <code>optional float qValue = 8 [default = -1];</code>
      */
     public boolean hasQValue() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+      return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
-     * <code>optional double qValue = 8;</code>
+     * <code>optional float qValue = 8 [default = -1];</code>
      */
-    public double getQValue() {
+    public float getQValue() {
       return qValue_;
     }
 
     public static final int PERCENTANNOTATEDOFMS2TIC_FIELD_NUMBER = 9;
-    private double percentAnnotatedOfMS2Tic_;
+    private float percentAnnotatedOfMS2Tic_;
     /**
-     * <code>optional double percentAnnotatedOfMS2tic = 9;</code>
+     * <code>optional float percentAnnotatedOfMS2tic = 9 [default = -1];</code>
      */
     public boolean hasPercentAnnotatedOfMS2Tic() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
+      return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     /**
-     * <code>optional double percentAnnotatedOfMS2tic = 9;</code>
+     * <code>optional float percentAnnotatedOfMS2tic = 9 [default = -1];</code>
      */
-    public double getPercentAnnotatedOfMS2Tic() {
+    public float getPercentAnnotatedOfMS2Tic() {
       return percentAnnotatedOfMS2Tic_;
     }
 
@@ -2702,13 +3119,73 @@ public final class MSFragmentationProtocol {
      * <code>optional uint32 n = 10 [default = 1];</code>
      */
     public boolean hasN() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
+      return ((bitField0_ & 0x00000400) == 0x00000400);
     }
     /**
      * <code>optional uint32 n = 10 [default = 1];</code>
      */
     public int getN() {
       return n_;
+    }
+
+    public static final int PRECURSORTYPE_FIELD_NUMBER = 11;
+    private se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType precursorType_;
+    /**
+     * <code>optional .se.lth.immun.protocol.PrecursorType precursorType = 11 [default = ORIG];</code>
+     */
+    public boolean hasPrecursorType() {
+      return ((bitField0_ & 0x00000800) == 0x00000800);
+    }
+    /**
+     * <code>optional .se.lth.immun.protocol.PrecursorType precursorType = 11 [default = ORIG];</code>
+     */
+    public se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType getPrecursorType() {
+      return precursorType_;
+    }
+
+    public static final int PRECURSORINTENSITYRANK_FIELD_NUMBER = 12;
+    private int precursorIntensityRank_;
+    /**
+     * <code>optional uint32 precursorIntensityRank = 12 [default = 1];</code>
+     */
+    public boolean hasPrecursorIntensityRank() {
+      return ((bitField0_ & 0x00001000) == 0x00001000);
+    }
+    /**
+     * <code>optional uint32 precursorIntensityRank = 12 [default = 1];</code>
+     */
+    public int getPrecursorIntensityRank() {
+      return precursorIntensityRank_;
+    }
+
+    public static final int PRECURSORFEATUREAPEXINTENSITY_FIELD_NUMBER = 13;
+    private float precursorFeatureApexIntensity_;
+    /**
+     * <code>optional float precursorFeatureApexIntensity = 13 [default = 0];</code>
+     */
+    public boolean hasPrecursorFeatureApexIntensity() {
+      return ((bitField0_ & 0x00002000) == 0x00002000);
+    }
+    /**
+     * <code>optional float precursorFeatureApexIntensity = 13 [default = 0];</code>
+     */
+    public float getPrecursorFeatureApexIntensity() {
+      return precursorFeatureApexIntensity_;
+    }
+
+    public static final int SCORE_FIELD_NUMBER = 16;
+    private float score_;
+    /**
+     * <code>optional float score = 16 [default = 0];</code>
+     */
+    public boolean hasScore() {
+      return ((bitField0_ & 0x00004000) == 0x00004000);
+    }
+    /**
+     * <code>optional float score = 16 [default = 0];</code>
+     */
+    public float getScore() {
+      return score_;
     }
 
     public static final int FRAGMENT_FIELD_NUMBER = 15;
@@ -2749,14 +3226,19 @@ public final class MSFragmentationProtocol {
     private void initFields() {
       type_ = se.lth.immun.protocol.MSFragmentationProtocol.FragmentationType.CID;
       charge_ = 0;
-      ce_ = 0D;
+      ce_ = 0F;
       precursorMz_ = 0D;
-      precursorIntensity_ = 0D;
-      iRT_ = 0D;
-      fragmentBaseIntensity_ = 0D;
-      qValue_ = 0D;
-      percentAnnotatedOfMS2Tic_ = 0D;
+      precursorIntensity_ = 0F;
+      iRT_ = -1e+06F;
+      iRTstd_ = 0F;
+      fragmentBaseIntensity_ = -1F;
+      qValue_ = -1F;
+      percentAnnotatedOfMS2Tic_ = -1F;
       n_ = 1;
+      precursorType_ = se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType.ORIG;
+      precursorIntensityRank_ = 1;
+      precursorFeatureApexIntensity_ = 0F;
+      score_ = 0F;
       fragment_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
@@ -2797,31 +3279,46 @@ public final class MSFragmentationProtocol {
         output.writeInt32(2, charge_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeDouble(3, ce_);
+        output.writeFloat(3, ce_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeDouble(4, precursorMz_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeDouble(5, precursorIntensity_);
+        output.writeFloat(5, precursorIntensity_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeDouble(6, iRT_);
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeDouble(7, fragmentBaseIntensity_);
+        output.writeFloat(6, iRT_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeDouble(8, qValue_);
+        output.writeFloat(7, fragmentBaseIntensity_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeDouble(9, percentAnnotatedOfMS2Tic_);
+        output.writeFloat(8, qValue_);
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeFloat(9, percentAnnotatedOfMS2Tic_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
         output.writeUInt32(10, n_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        output.writeEnum(11, precursorType_.getNumber());
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        output.writeUInt32(12, precursorIntensityRank_);
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        output.writeFloat(13, precursorFeatureApexIntensity_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeFloat(14, iRTstd_);
       }
       for (int i = 0; i < fragment_.size(); i++) {
         output.writeMessage(15, fragment_.get(i));
+      }
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+        output.writeFloat(16, score_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -2842,7 +3339,7 @@ public final class MSFragmentationProtocol {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(3, ce_);
+          .computeFloatSize(3, ce_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
@@ -2850,31 +3347,51 @@ public final class MSFragmentationProtocol {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(5, precursorIntensity_);
+          .computeFloatSize(5, precursorIntensity_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(6, iRT_);
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(7, fragmentBaseIntensity_);
+          .computeFloatSize(6, iRT_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(8, qValue_);
+          .computeFloatSize(7, fragmentBaseIntensity_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(9, percentAnnotatedOfMS2Tic_);
+          .computeFloatSize(8, qValue_);
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(9, percentAnnotatedOfMS2Tic_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(10, n_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(11, precursorType_.getNumber());
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(12, precursorIntensityRank_);
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(13, precursorFeatureApexIntensity_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(14, iRTstd_);
       }
       for (int i = 0; i < fragment_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(15, fragment_.get(i));
+      }
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(16, score_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2998,25 +3515,35 @@ public final class MSFragmentationProtocol {
         bitField0_ = (bitField0_ & ~0x00000001);
         charge_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
-        ce_ = 0D;
+        ce_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000004);
         precursorMz_ = 0D;
         bitField0_ = (bitField0_ & ~0x00000008);
-        precursorIntensity_ = 0D;
+        precursorIntensity_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000010);
-        iRT_ = 0D;
+        iRT_ = -1e+06F;
         bitField0_ = (bitField0_ & ~0x00000020);
-        fragmentBaseIntensity_ = 0D;
+        iRTstd_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000040);
-        qValue_ = 0D;
+        fragmentBaseIntensity_ = -1F;
         bitField0_ = (bitField0_ & ~0x00000080);
-        percentAnnotatedOfMS2Tic_ = 0D;
+        qValue_ = -1F;
         bitField0_ = (bitField0_ & ~0x00000100);
-        n_ = 1;
+        percentAnnotatedOfMS2Tic_ = -1F;
         bitField0_ = (bitField0_ & ~0x00000200);
+        n_ = 1;
+        bitField0_ = (bitField0_ & ~0x00000400);
+        precursorType_ = se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType.ORIG;
+        bitField0_ = (bitField0_ & ~0x00000800);
+        precursorIntensityRank_ = 1;
+        bitField0_ = (bitField0_ & ~0x00001000);
+        precursorFeatureApexIntensity_ = 0F;
+        bitField0_ = (bitField0_ & ~0x00002000);
+        score_ = 0F;
+        bitField0_ = (bitField0_ & ~0x00004000);
         if (fragmentBuilder_ == null) {
           fragment_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000400);
+          bitField0_ = (bitField0_ & ~0x00008000);
         } else {
           fragmentBuilder_.clear();
         }
@@ -3075,23 +3602,43 @@ public final class MSFragmentationProtocol {
         if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
           to_bitField0_ |= 0x00000040;
         }
-        result.fragmentBaseIntensity_ = fragmentBaseIntensity_;
+        result.iRTstd_ = iRTstd_;
         if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
           to_bitField0_ |= 0x00000080;
         }
-        result.qValue_ = qValue_;
+        result.fragmentBaseIntensity_ = fragmentBaseIntensity_;
         if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
           to_bitField0_ |= 0x00000100;
         }
-        result.percentAnnotatedOfMS2Tic_ = percentAnnotatedOfMS2Tic_;
+        result.qValue_ = qValue_;
         if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
           to_bitField0_ |= 0x00000200;
         }
+        result.percentAnnotatedOfMS2Tic_ = percentAnnotatedOfMS2Tic_;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000400;
+        }
         result.n_ = n_;
+        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
+          to_bitField0_ |= 0x00000800;
+        }
+        result.precursorType_ = precursorType_;
+        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
+          to_bitField0_ |= 0x00001000;
+        }
+        result.precursorIntensityRank_ = precursorIntensityRank_;
+        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
+          to_bitField0_ |= 0x00002000;
+        }
+        result.precursorFeatureApexIntensity_ = precursorFeatureApexIntensity_;
+        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
+          to_bitField0_ |= 0x00004000;
+        }
+        result.score_ = score_;
         if (fragmentBuilder_ == null) {
-          if (((bitField0_ & 0x00000400) == 0x00000400)) {
+          if (((bitField0_ & 0x00008000) == 0x00008000)) {
             fragment_ = java.util.Collections.unmodifiableList(fragment_);
-            bitField0_ = (bitField0_ & ~0x00000400);
+            bitField0_ = (bitField0_ & ~0x00008000);
           }
           result.fragment_ = fragment_;
         } else {
@@ -3131,6 +3678,9 @@ public final class MSFragmentationProtocol {
         if (other.hasIRT()) {
           setIRT(other.getIRT());
         }
+        if (other.hasIRTstd()) {
+          setIRTstd(other.getIRTstd());
+        }
         if (other.hasFragmentBaseIntensity()) {
           setFragmentBaseIntensity(other.getFragmentBaseIntensity());
         }
@@ -3143,11 +3693,23 @@ public final class MSFragmentationProtocol {
         if (other.hasN()) {
           setN(other.getN());
         }
+        if (other.hasPrecursorType()) {
+          setPrecursorType(other.getPrecursorType());
+        }
+        if (other.hasPrecursorIntensityRank()) {
+          setPrecursorIntensityRank(other.getPrecursorIntensityRank());
+        }
+        if (other.hasPrecursorFeatureApexIntensity()) {
+          setPrecursorFeatureApexIntensity(other.getPrecursorFeatureApexIntensity());
+        }
+        if (other.hasScore()) {
+          setScore(other.getScore());
+        }
         if (fragmentBuilder_ == null) {
           if (!other.fragment_.isEmpty()) {
             if (fragment_.isEmpty()) {
               fragment_ = other.fragment_;
-              bitField0_ = (bitField0_ & ~0x00000400);
+              bitField0_ = (bitField0_ & ~0x00008000);
             } else {
               ensureFragmentIsMutable();
               fragment_.addAll(other.fragment_);
@@ -3160,7 +3722,7 @@ public final class MSFragmentationProtocol {
               fragmentBuilder_.dispose();
               fragmentBuilder_ = null;
               fragment_ = other.fragment_;
-              bitField0_ = (bitField0_ & ~0x00000400);
+              bitField0_ = (bitField0_ & ~0x00008000);
               fragmentBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getFragmentFieldBuilder() : null;
@@ -3281,53 +3843,53 @@ public final class MSFragmentationProtocol {
         return this;
       }
 
-      private double ce_ ;
+      private float ce_ ;
       /**
-       * <code>required double ce = 3;</code>
+       * <code>required float ce = 3;</code>
        */
       public boolean hasCe() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required double ce = 3;</code>
+       * <code>required float ce = 3;</code>
        */
-      public double getCe() {
+      public float getCe() {
         return ce_;
       }
       /**
-       * <code>required double ce = 3;</code>
+       * <code>required float ce = 3;</code>
        */
-      public Builder setCe(double value) {
+      public Builder setCe(float value) {
         bitField0_ |= 0x00000004;
         ce_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required double ce = 3;</code>
+       * <code>required float ce = 3;</code>
        */
       public Builder clearCe() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        ce_ = 0D;
+        ce_ = 0F;
         onChanged();
         return this;
       }
 
       private double precursorMz_ ;
       /**
-       * <code>optional double precursorMz = 4;</code>
+       * <code>optional double precursorMz = 4 [default = 0];</code>
        */
       public boolean hasPrecursorMz() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>optional double precursorMz = 4;</code>
+       * <code>optional double precursorMz = 4 [default = 0];</code>
        */
       public double getPrecursorMz() {
         return precursorMz_;
       }
       /**
-       * <code>optional double precursorMz = 4;</code>
+       * <code>optional double precursorMz = 4 [default = 0];</code>
        */
       public Builder setPrecursorMz(double value) {
         bitField0_ |= 0x00000008;
@@ -3336,7 +3898,7 @@ public final class MSFragmentationProtocol {
         return this;
       }
       /**
-       * <code>optional double precursorMz = 4;</code>
+       * <code>optional double precursorMz = 4 [default = 0];</code>
        */
       public Builder clearPrecursorMz() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -3345,162 +3907,194 @@ public final class MSFragmentationProtocol {
         return this;
       }
 
-      private double precursorIntensity_ ;
+      private float precursorIntensity_ ;
       /**
-       * <code>optional double precursorIntensity = 5;</code>
+       * <code>optional float precursorIntensity = 5 [default = 0];</code>
        */
       public boolean hasPrecursorIntensity() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional double precursorIntensity = 5;</code>
+       * <code>optional float precursorIntensity = 5 [default = 0];</code>
        */
-      public double getPrecursorIntensity() {
+      public float getPrecursorIntensity() {
         return precursorIntensity_;
       }
       /**
-       * <code>optional double precursorIntensity = 5;</code>
+       * <code>optional float precursorIntensity = 5 [default = 0];</code>
        */
-      public Builder setPrecursorIntensity(double value) {
+      public Builder setPrecursorIntensity(float value) {
         bitField0_ |= 0x00000010;
         precursorIntensity_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double precursorIntensity = 5;</code>
+       * <code>optional float precursorIntensity = 5 [default = 0];</code>
        */
       public Builder clearPrecursorIntensity() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        precursorIntensity_ = 0D;
+        precursorIntensity_ = 0F;
         onChanged();
         return this;
       }
 
-      private double iRT_ ;
+      private float iRT_ = -1e+06F;
       /**
-       * <code>optional double iRT = 6;</code>
+       * <code>optional float iRT = 6 [default = -1e+06];</code>
        */
       public boolean hasIRT() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional double iRT = 6;</code>
+       * <code>optional float iRT = 6 [default = -1e+06];</code>
        */
-      public double getIRT() {
+      public float getIRT() {
         return iRT_;
       }
       /**
-       * <code>optional double iRT = 6;</code>
+       * <code>optional float iRT = 6 [default = -1e+06];</code>
        */
-      public Builder setIRT(double value) {
+      public Builder setIRT(float value) {
         bitField0_ |= 0x00000020;
         iRT_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double iRT = 6;</code>
+       * <code>optional float iRT = 6 [default = -1e+06];</code>
        */
       public Builder clearIRT() {
         bitField0_ = (bitField0_ & ~0x00000020);
-        iRT_ = 0D;
+        iRT_ = -1e+06F;
         onChanged();
         return this;
       }
 
-      private double fragmentBaseIntensity_ ;
+      private float iRTstd_ ;
       /**
-       * <code>optional double fragmentBaseIntensity = 7;</code>
+       * <code>optional float iRTstd = 14 [default = 0];</code>
        */
-      public boolean hasFragmentBaseIntensity() {
+      public boolean hasIRTstd() {
         return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
-       * <code>optional double fragmentBaseIntensity = 7;</code>
+       * <code>optional float iRTstd = 14 [default = 0];</code>
        */
-      public double getFragmentBaseIntensity() {
+      public float getIRTstd() {
+        return iRTstd_;
+      }
+      /**
+       * <code>optional float iRTstd = 14 [default = 0];</code>
+       */
+      public Builder setIRTstd(float value) {
+        bitField0_ |= 0x00000040;
+        iRTstd_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional float iRTstd = 14 [default = 0];</code>
+       */
+      public Builder clearIRTstd() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        iRTstd_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float fragmentBaseIntensity_ = -1F;
+      /**
+       * <code>optional float fragmentBaseIntensity = 7 [default = -1];</code>
+       */
+      public boolean hasFragmentBaseIntensity() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional float fragmentBaseIntensity = 7 [default = -1];</code>
+       */
+      public float getFragmentBaseIntensity() {
         return fragmentBaseIntensity_;
       }
       /**
-       * <code>optional double fragmentBaseIntensity = 7;</code>
+       * <code>optional float fragmentBaseIntensity = 7 [default = -1];</code>
        */
-      public Builder setFragmentBaseIntensity(double value) {
-        bitField0_ |= 0x00000040;
+      public Builder setFragmentBaseIntensity(float value) {
+        bitField0_ |= 0x00000080;
         fragmentBaseIntensity_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double fragmentBaseIntensity = 7;</code>
+       * <code>optional float fragmentBaseIntensity = 7 [default = -1];</code>
        */
       public Builder clearFragmentBaseIntensity() {
-        bitField0_ = (bitField0_ & ~0x00000040);
-        fragmentBaseIntensity_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000080);
+        fragmentBaseIntensity_ = -1F;
         onChanged();
         return this;
       }
 
-      private double qValue_ ;
+      private float qValue_ = -1F;
       /**
-       * <code>optional double qValue = 8;</code>
+       * <code>optional float qValue = 8 [default = -1];</code>
        */
       public boolean hasQValue() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
+        return ((bitField0_ & 0x00000100) == 0x00000100);
       }
       /**
-       * <code>optional double qValue = 8;</code>
+       * <code>optional float qValue = 8 [default = -1];</code>
        */
-      public double getQValue() {
+      public float getQValue() {
         return qValue_;
       }
       /**
-       * <code>optional double qValue = 8;</code>
+       * <code>optional float qValue = 8 [default = -1];</code>
        */
-      public Builder setQValue(double value) {
-        bitField0_ |= 0x00000080;
+      public Builder setQValue(float value) {
+        bitField0_ |= 0x00000100;
         qValue_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double qValue = 8;</code>
+       * <code>optional float qValue = 8 [default = -1];</code>
        */
       public Builder clearQValue() {
-        bitField0_ = (bitField0_ & ~0x00000080);
-        qValue_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000100);
+        qValue_ = -1F;
         onChanged();
         return this;
       }
 
-      private double percentAnnotatedOfMS2Tic_ ;
+      private float percentAnnotatedOfMS2Tic_ = -1F;
       /**
-       * <code>optional double percentAnnotatedOfMS2tic = 9;</code>
+       * <code>optional float percentAnnotatedOfMS2tic = 9 [default = -1];</code>
        */
       public boolean hasPercentAnnotatedOfMS2Tic() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
+        return ((bitField0_ & 0x00000200) == 0x00000200);
       }
       /**
-       * <code>optional double percentAnnotatedOfMS2tic = 9;</code>
+       * <code>optional float percentAnnotatedOfMS2tic = 9 [default = -1];</code>
        */
-      public double getPercentAnnotatedOfMS2Tic() {
+      public float getPercentAnnotatedOfMS2Tic() {
         return percentAnnotatedOfMS2Tic_;
       }
       /**
-       * <code>optional double percentAnnotatedOfMS2tic = 9;</code>
+       * <code>optional float percentAnnotatedOfMS2tic = 9 [default = -1];</code>
        */
-      public Builder setPercentAnnotatedOfMS2Tic(double value) {
-        bitField0_ |= 0x00000100;
+      public Builder setPercentAnnotatedOfMS2Tic(float value) {
+        bitField0_ |= 0x00000200;
         percentAnnotatedOfMS2Tic_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double percentAnnotatedOfMS2tic = 9;</code>
+       * <code>optional float percentAnnotatedOfMS2tic = 9 [default = -1];</code>
        */
       public Builder clearPercentAnnotatedOfMS2Tic() {
-        bitField0_ = (bitField0_ & ~0x00000100);
-        percentAnnotatedOfMS2Tic_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000200);
+        percentAnnotatedOfMS2Tic_ = -1F;
         onChanged();
         return this;
       }
@@ -3510,7 +4104,7 @@ public final class MSFragmentationProtocol {
        * <code>optional uint32 n = 10 [default = 1];</code>
        */
       public boolean hasN() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
+        return ((bitField0_ & 0x00000400) == 0x00000400);
       }
       /**
        * <code>optional uint32 n = 10 [default = 1];</code>
@@ -3522,7 +4116,7 @@ public final class MSFragmentationProtocol {
        * <code>optional uint32 n = 10 [default = 1];</code>
        */
       public Builder setN(int value) {
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         n_ = value;
         onChanged();
         return this;
@@ -3531,8 +4125,139 @@ public final class MSFragmentationProtocol {
        * <code>optional uint32 n = 10 [default = 1];</code>
        */
       public Builder clearN() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000400);
         n_ = 1;
+        onChanged();
+        return this;
+      }
+
+      private se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType precursorType_ = se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType.ORIG;
+      /**
+       * <code>optional .se.lth.immun.protocol.PrecursorType precursorType = 11 [default = ORIG];</code>
+       */
+      public boolean hasPrecursorType() {
+        return ((bitField0_ & 0x00000800) == 0x00000800);
+      }
+      /**
+       * <code>optional .se.lth.immun.protocol.PrecursorType precursorType = 11 [default = ORIG];</code>
+       */
+      public se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType getPrecursorType() {
+        return precursorType_;
+      }
+      /**
+       * <code>optional .se.lth.immun.protocol.PrecursorType precursorType = 11 [default = ORIG];</code>
+       */
+      public Builder setPrecursorType(se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000800;
+        precursorType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .se.lth.immun.protocol.PrecursorType precursorType = 11 [default = ORIG];</code>
+       */
+      public Builder clearPrecursorType() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        precursorType_ = se.lth.immun.protocol.MSFragmentationProtocol.PrecursorType.ORIG;
+        onChanged();
+        return this;
+      }
+
+      private int precursorIntensityRank_ = 1;
+      /**
+       * <code>optional uint32 precursorIntensityRank = 12 [default = 1];</code>
+       */
+      public boolean hasPrecursorIntensityRank() {
+        return ((bitField0_ & 0x00001000) == 0x00001000);
+      }
+      /**
+       * <code>optional uint32 precursorIntensityRank = 12 [default = 1];</code>
+       */
+      public int getPrecursorIntensityRank() {
+        return precursorIntensityRank_;
+      }
+      /**
+       * <code>optional uint32 precursorIntensityRank = 12 [default = 1];</code>
+       */
+      public Builder setPrecursorIntensityRank(int value) {
+        bitField0_ |= 0x00001000;
+        precursorIntensityRank_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint32 precursorIntensityRank = 12 [default = 1];</code>
+       */
+      public Builder clearPrecursorIntensityRank() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        precursorIntensityRank_ = 1;
+        onChanged();
+        return this;
+      }
+
+      private float precursorFeatureApexIntensity_ ;
+      /**
+       * <code>optional float precursorFeatureApexIntensity = 13 [default = 0];</code>
+       */
+      public boolean hasPrecursorFeatureApexIntensity() {
+        return ((bitField0_ & 0x00002000) == 0x00002000);
+      }
+      /**
+       * <code>optional float precursorFeatureApexIntensity = 13 [default = 0];</code>
+       */
+      public float getPrecursorFeatureApexIntensity() {
+        return precursorFeatureApexIntensity_;
+      }
+      /**
+       * <code>optional float precursorFeatureApexIntensity = 13 [default = 0];</code>
+       */
+      public Builder setPrecursorFeatureApexIntensity(float value) {
+        bitField0_ |= 0x00002000;
+        precursorFeatureApexIntensity_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional float precursorFeatureApexIntensity = 13 [default = 0];</code>
+       */
+      public Builder clearPrecursorFeatureApexIntensity() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        precursorFeatureApexIntensity_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float score_ ;
+      /**
+       * <code>optional float score = 16 [default = 0];</code>
+       */
+      public boolean hasScore() {
+        return ((bitField0_ & 0x00004000) == 0x00004000);
+      }
+      /**
+       * <code>optional float score = 16 [default = 0];</code>
+       */
+      public float getScore() {
+        return score_;
+      }
+      /**
+       * <code>optional float score = 16 [default = 0];</code>
+       */
+      public Builder setScore(float value) {
+        bitField0_ |= 0x00004000;
+        score_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional float score = 16 [default = 0];</code>
+       */
+      public Builder clearScore() {
+        bitField0_ = (bitField0_ & ~0x00004000);
+        score_ = 0F;
         onChanged();
         return this;
       }
@@ -3540,9 +4265,9 @@ public final class MSFragmentationProtocol {
       private java.util.List<se.lth.immun.protocol.MSFragmentationProtocol.Fragment> fragment_ =
         java.util.Collections.emptyList();
       private void ensureFragmentIsMutable() {
-        if (!((bitField0_ & 0x00000400) == 0x00000400)) {
+        if (!((bitField0_ & 0x00008000) == 0x00008000)) {
           fragment_ = new java.util.ArrayList<se.lth.immun.protocol.MSFragmentationProtocol.Fragment>(fragment_);
-          bitField0_ |= 0x00000400;
+          bitField0_ |= 0x00008000;
          }
       }
 
@@ -3692,7 +4417,7 @@ public final class MSFragmentationProtocol {
       public Builder clearFragment() {
         if (fragmentBuilder_ == null) {
           fragment_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000400);
+          bitField0_ = (bitField0_ & ~0x00008000);
           onChanged();
         } else {
           fragmentBuilder_.clear();
@@ -3769,7 +4494,7 @@ public final class MSFragmentationProtocol {
           fragmentBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               se.lth.immun.protocol.MSFragmentationProtocol.Fragment, se.lth.immun.protocol.MSFragmentationProtocol.Fragment.Builder, se.lth.immun.protocol.MSFragmentationProtocol.FragmentOrBuilder>(
                   fragment_,
-                  ((bitField0_ & 0x00000400) == 0x00000400),
+                  ((bitField0_ & 0x00008000) == 0x00008000),
                   getParentForChildren(),
                   isClean());
           fragment_ = null;
@@ -4223,27 +4948,35 @@ public final class MSFragmentationProtocol {
   static {
     java.lang.String[] descriptorData = {
       "\n\026ms-fragmentation.proto\022\025se.lth.immun.p" +
-      "rotocol\"e\n\nAAMolecule\022\020\n\010sequence\030\001 \002(\t\022" +
-      "\014\n\004mass\030\002 \001(\001\0227\n\013observation\030\n \003(\0132\".se." +
-      "lth.immun.protocol.Observation\"\343\001\n\010Fragm" +
-      "ent\022\021\n\tintensity\030\001 \002(\001\0221\n\004type\030\002 \002(\0162#.s" +
-      "e.lth.immun.protocol.FragmentType\022\n\n\002mz\030" +
-      "\003 \001(\001\022\017\n\007ordinal\030\004 \001(\r\022\016\n\006charge\030\005 \001(\005\022\025" +
-      "\n\rinternalFirst\030\006 \001(\r\022\024\n\014internalLast\030\007 " +
-      "\001(\r\022\023\n\013origPeptide\030\010 \001(\r\022\024\n\014intensityStd" +
-      "\030\t \001(\001\022\014\n\001n\030\n \001(\r:\0011\"\261\002\n\013Observation\0226\n\004",
-      "type\030\001 \002(\0162(.se.lth.immun.protocol.Fragm" +
-      "entationType\022\016\n\006charge\030\002 \002(\005\022\n\n\002ce\030\003 \002(\001" +
-      "\022\023\n\013precursorMz\030\004 \001(\001\022\032\n\022precursorIntens" +
-      "ity\030\005 \001(\001\022\013\n\003iRT\030\006 \001(\001\022\035\n\025fragmentBaseIn" +
-      "tensity\030\007 \001(\001\022\016\n\006qValue\030\010 \001(\001\022 \n\030percent" +
-      "AnnotatedOfMS2tic\030\t \001(\001\022\014\n\001n\030\n \001(\r:\0011\0221\n" +
-      "\010fragment\030\017 \003(\0132\037.se.lth.immun.protocol." +
-      "Fragment\"\027\n\007MsgSize\022\014\n\004size\030\001 \002(\007*.\n\021Fra" +
-      "gmentationType\022\007\n\003CID\020\000\022\007\n\003HCD\020\001\022\007\n\003ETD\020" +
-      "\002*?\n\014FragmentType\022\005\n\001A\020\001\022\005\n\001B\020\002\022\005\n\001C\020\003\022\005",
-      "\n\001X\020\004\022\005\n\001Y\020\005\022\005\n\001Z\020\006\022\005\n\001M\020\007B0\n\025se.lth.imm" +
-      "un.protocolB\027MSFragmentationProtocol"
+      "rotocol\"x\n\nAAMolecule\022\020\n\010sequence\030\001 \002(\t\022" +
+      "\014\n\004mass\030\002 \001(\001\022\021\n\007protein\030\003 \001(\t:\000\0227\n\013obse" +
+      "rvation\030\n \003(\0132\".se.lth.immun.protocol.Ob" +
+      "servation\"\371\001\n\010Fragment\022\021\n\tintensity\030\001 \002(" +
+      "\002\0221\n\004type\030\002 \002(\0162#.se.lth.immun.protocol." +
+      "FragmentType\022\n\n\002mz\030\003 \001(\001\022\017\n\007ordinal\030\004 \001(" +
+      "\r\022\016\n\006charge\030\005 \001(\005\022\025\n\rinternalFirst\030\006 \001(\r" +
+      "\022\024\n\014internalLast\030\007 \001(\r\022\023\n\013origPeptide\030\010 " +
+      "\001(\r\022\024\n\014intensityStd\030\t \001(\002\022\014\n\001n\030\n \001(\r:\0011\022",
+      "\024\n\010mzErrPPM\030\013 \001(\002:\002-1\"\200\004\n\013Observation\0226\n" +
+      "\004type\030\001 \002(\0162(.se.lth.immun.protocol.Frag" +
+      "mentationType\022\016\n\006charge\030\002 \002(\005\022\n\n\002ce\030\003 \002(" +
+      "\002\022\026\n\013precursorMz\030\004 \001(\001:\0010\022\035\n\022precursorIn" +
+      "tensity\030\005 \001(\002:\0010\022\023\n\003iRT\030\006 \001(\002:\006-1e+06\022\021\n" +
+      "\006iRTstd\030\016 \001(\002:\0010\022!\n\025fragmentBaseIntensit" +
+      "y\030\007 \001(\002:\002-1\022\022\n\006qValue\030\010 \001(\002:\002-1\022$\n\030perce" +
+      "ntAnnotatedOfMS2tic\030\t \001(\002:\002-1\022\014\n\001n\030\n \001(\r" +
+      ":\0011\022A\n\rprecursorType\030\013 \001(\0162$.se.lth.immu" +
+      "n.protocol.PrecursorType:\004ORIG\022!\n\026precur",
+      "sorIntensityRank\030\014 \001(\r:\0011\022(\n\035precursorFe" +
+      "atureApexIntensity\030\r \001(\002:\0010\022\020\n\005score\030\020 \001" +
+      "(\002:\0010\0221\n\010fragment\030\017 \003(\0132\037.se.lth.immun.p" +
+      "rotocol.Fragment\"\027\n\007MsgSize\022\014\n\004size\030\001 \002(" +
+      "\007*3\n\rPrecursorType\022\010\n\004ORIG\020\000\022\010\n\004FEAT\020\001\022\016" +
+      "\n\nCOMPL_FRAG\020\002*.\n\021FragmentationType\022\007\n\003C" +
+      "ID\020\000\022\007\n\003HCD\020\001\022\007\n\003ETD\020\002*?\n\014FragmentType\022\005" +
+      "\n\001A\020\001\022\005\n\001B\020\002\022\005\n\001C\020\003\022\005\n\001X\020\004\022\005\n\001Y\020\005\022\005\n\001Z\020\006" +
+      "\022\005\n\001M\020\007B0\n\025se.lth.immun.protocolB\027MSFrag" +
+      "mentationProtocol"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4262,19 +4995,19 @@ public final class MSFragmentationProtocol {
     internal_static_se_lth_immun_protocol_AAMolecule_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_se_lth_immun_protocol_AAMolecule_descriptor,
-        new java.lang.String[] { "Sequence", "Mass", "Observation", });
+        new java.lang.String[] { "Sequence", "Mass", "Protein", "Observation", });
     internal_static_se_lth_immun_protocol_Fragment_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_se_lth_immun_protocol_Fragment_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_se_lth_immun_protocol_Fragment_descriptor,
-        new java.lang.String[] { "Intensity", "Type", "Mz", "Ordinal", "Charge", "InternalFirst", "InternalLast", "OrigPeptide", "IntensityStd", "N", });
+        new java.lang.String[] { "Intensity", "Type", "Mz", "Ordinal", "Charge", "InternalFirst", "InternalLast", "OrigPeptide", "IntensityStd", "N", "MzErrPPM", });
     internal_static_se_lth_immun_protocol_Observation_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_se_lth_immun_protocol_Observation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_se_lth_immun_protocol_Observation_descriptor,
-        new java.lang.String[] { "Type", "Charge", "Ce", "PrecursorMz", "PrecursorIntensity", "IRT", "FragmentBaseIntensity", "QValue", "PercentAnnotatedOfMS2Tic", "N", "Fragment", });
+        new java.lang.String[] { "Type", "Charge", "Ce", "PrecursorMz", "PrecursorIntensity", "IRT", "IRTstd", "FragmentBaseIntensity", "QValue", "PercentAnnotatedOfMS2Tic", "N", "PrecursorType", "PrecursorIntensityRank", "PrecursorFeatureApexIntensity", "Score", "Fragment", });
     internal_static_se_lth_immun_protocol_MsgSize_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_se_lth_immun_protocol_MsgSize_fieldAccessorTable = new
