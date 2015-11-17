@@ -58,7 +58,7 @@ class GhostTarget {
 	var target:Target = null
 	
 	def pepCompId = 
-		peptide.map(_.id).getOrElse("") + "-" + compound.map(_.id).getOrElse("") 
+		peptide.map(_.id).getOrElse("") + compound.map(_.id).getOrElse("") 
 		
 	def isCompound(id:String) = compound.map(_.id == id).getOrElse(false)
 	def isPeptide(id:String) = peptide.map(_.id == id).getOrElse(false)

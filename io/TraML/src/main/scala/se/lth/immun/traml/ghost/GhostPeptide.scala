@@ -9,8 +9,6 @@ import scala.collection.mutable.HashSet
 import Ghost._
 	
 object GhostPeptide {
-		
-	val FULL_PEPTIDE_NAME = "full_peptide_name"
 	
 	def fromPeptide(p:Peptide):GhostPeptide = {
 		var x = new GhostPeptide
@@ -130,7 +128,7 @@ class GhostPeptide {
 	}
 	def fullSequenceParam = {
 		var u = new UserParam
-		u.name = GhostPeptide.FULL_PEPTIDE_NAME
+		u.name = FULL_PEPTIDE_NAME
 		u.value = fullPeptideName
 		u.dataType = Some("xsd:string")
 		u

@@ -21,6 +21,14 @@ object UserParam {
 		r.next
 		return x
 	}
+	
+	def string(name:String, value:Option[Any]) = {
+		val u = new UserParam
+		u.name = name
+		u.dataType = Some("xsd:string")
+		u.value = value.map(_.toString)
+		u
+	}
 }
 
 class UserParam {

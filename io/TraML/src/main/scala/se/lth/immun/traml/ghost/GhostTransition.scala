@@ -179,7 +179,7 @@ class GhostTransition {
 		cv.cvRef = "MS"
 		cv.accession = PRODUCT_ION_INTENSITY_ACC
 		cv.name = "product ion intensity"
-		cv.value = Some(intensity.toString)
+		cv.value = intensity.map(_.toString)
 		cv
 	}
 	
@@ -212,7 +212,7 @@ class GhostTransition {
 		cv.cvRef = "MS"
 		cv.accession = COLLISION_ENERGY_ACC
 		cv.name = "collision energy"
-		cv.value = Some(ce.toString)
+		cv.value = ce.map(_.toString)
 		var c = new Configuration
 		c.cvParams += cv
 		instrumentRef.foreach(c.instrumentRef = _)

@@ -11,6 +11,7 @@ object GhostTraML {
 	
 	case class PrecKey(mz:Double, pepCompId:String) {
 		override def toString = "%s_%.6f".format(pepCompId, mz)
+		
 	}
 	
 	def fromFile(r:XmlReader, repFreq:Int = 0):GhostTraML = {
@@ -24,13 +25,32 @@ object GhostTraML {
 		for (p <- x.traml.compoundList.compounds)
 			x.compounds += p.id -> GhostCompound.fromCompound(p)
 		
-		for (t <- x.traml.transitions) 
-			x += GhostTransition.fromTransition(t, x.peptides, x.compounds)
+		val keyMap = new HashMap[(String, Int), PrecKey]
+		for (t <- x.traml.transitions) {
+			val gt = GhostTransition.fromTransition(t, x.peptides, x.compounds)
+			keyMap((gt.pepCompId, gt.peptide.flatMap(_.charge).getOrElse(gt.q1z))) = 
+				PrecKey(gt.q1, gt.pepCompId)
+			x += gt
+		}
 		
-		if (x.traml.targetList.isDefined)
-			for (t <- x.traml.targetList.get.targetIncludes) 
-				x += GhostTarget.fromTarget(t, x.peptides, x.compounds)
-			
+		if (x.traml.targetList.isDefined) {
+			val gts = 
+				for (t <- x.traml.targetList.get.targetIncludes) yield 
+					GhostTarget.fromTarget(t, x.peptides, x.compounds)
+			for {
+				((pepCompId, z), assayGts) <- gts.groupBy(gt => (gt.pepCompId, gt.q1z))
+				gt <- assayGts
+			} {
+				val precKey = 
+					keyMap.get((gt.pepCompId, gt.q1z))
+						.getOrElse(
+							PrecKey(assayGts.map(_.q1).min, gt.pepCompId)
+						)
+				x.add(precKey, gt)
+			}
+				
+		}
+		
 		return x
 	}
 }
@@ -61,9 +81,8 @@ class GhostTraML {
 	
 	
 	
-	def +=(gt:GhostTarget) = {
+	def add(key:PrecKey, gt:GhostTarget) = {
 		includes += gt
-		val key = PrecKey(gt.q1, gt.pepCompId)
 		if (!includeGroups.contains(key))
 			includeGroups(key) = new ArrayBuffer
 		includeGroups(key) += gt

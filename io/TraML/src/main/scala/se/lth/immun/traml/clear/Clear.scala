@@ -1,6 +1,9 @@
-package se.lth.immun.traml.ghost
+package se.lth.immun.traml.clear
 
-object Ghost {
+import scala.collection.mutable.ArrayBuffer
+import se.lth.immun.traml.CvParam
+
+object Clear {
 	
 	val PROTEIN_ACCESSION_ACC = "MS:1000885"
 	val PROTEIN_SHORT_NAME_ACC = "MS:1000883"
@@ -28,4 +31,29 @@ object Ghost {
 	val FULL_PEPTIDE_NAME = "full_peptide_name"
 	
 	val PEPTIDE_GROUP_LABEL = "MS:1000893"
+		
+	case class Channel(mz:Double, z:Int, id:String, msLevel:Int, expIntensity:Option[Double])
+	
+	class Assay(
+			val mz:Double,
+			val z:Int,
+			val parentId:String,
+			val ce:Option[Double]
+	) {
+		val ms1Channels = new ArrayBuffer[Channel]
+		val ms2Channels = new ArrayBuffer[Channel]
+		override def equals(o:Any) = 
+			o match {
+				case that: Assay => that.parentId == this.parentId && that.z == this.z
+			    case _ => false
+			}
+		override def hashCode = parentId.hashCode + z.hashCode
+		def metaCopy = new Assay(mz, z, parentId, ce)
+	}
+	
+	
+	def cvDouble(acc:String, cvParams:Seq[CvParam]) =
+		cvParams.find(_.accession == acc).flatMap(_.value.map(_.toDouble))
+	def cvInt(acc:String, cvParams:Seq[CvParam]) =
+		cvParams.find(_.accession == acc).flatMap(_.value.map(_.toInt))
 }
