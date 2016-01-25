@@ -101,7 +101,7 @@ public class Peptide implements IMolecule {
 				}
 				
 				f[i * (fragments.length) + j] = 
-						new PeptideFragment(fragment, i, mass, this);
+						new PeptideFragment(fragment, i+1, mass, this);
 			}
 		}
 		

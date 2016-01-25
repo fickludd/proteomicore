@@ -54,12 +54,36 @@ public class PeptideTest {
 		PeptideFragment[] fs = p.getFragments(fragmentTypes);
 		
 		assertEquals(20*6, fs.length);
-		assertEquals(1209.57991 - Constants.PROTON_WEIGHT, fs[60].mass, 0.001); // a11
-		assertEquals(1365.66978 - Constants.PROTON_WEIGHT, fs[67].mass, 0.001); // b12
-		assertEquals(1513.73682 - Constants.PROTON_WEIGHT, fs[74].mass, 0.001); // c13
-		assertEquals(1038.49370 - Constants.PROTON_WEIGHT, fs[75].mass, 0.001); // x8
-		assertEquals(865.44602 - Constants.PROTON_WEIGHT, fs[82].mass, 0.001); // y9
-		assertEquals(751.36671 - Constants.PROTON_WEIGHT, fs[89].mass, 0.001); // z10
+		
+		// a11
+		assertEquals(1209.57991 - Constants.PROTON_WEIGHT, fs[60].mass, 0.001); 
+		assertEquals(11, fs[60].ordinal);
+		assertEquals(EPeptideFragment.a, fs[60].fragmentType);
+		
+		// b12
+		assertEquals(1365.66978 - Constants.PROTON_WEIGHT, fs[67].mass, 0.001); 
+		assertEquals(12, fs[67].ordinal);
+		assertEquals(EPeptideFragment.b, fs[67].fragmentType);
+		
+		// c13
+		assertEquals(1513.73682 - Constants.PROTON_WEIGHT, fs[74].mass, 0.001); 
+		assertEquals(13, fs[74].ordinal);
+		assertEquals(EPeptideFragment.c, fs[74].fragmentType);
+		
+		// x8
+		assertEquals(1038.49370 - Constants.PROTON_WEIGHT, fs[75].mass, 0.001); 
+		assertEquals(8, fs[75].ordinal);
+		assertEquals(EPeptideFragment.x, fs[75].fragmentType);
+		
+		// y7
+		assertEquals(865.44602 - Constants.PROTON_WEIGHT, fs[82].mass, 0.001); 
+		assertEquals(7, fs[82].ordinal);
+		assertEquals(EPeptideFragment.y, fs[82].fragmentType);
+		
+		// z6
+		assertEquals(751.36671 - Constants.PROTON_WEIGHT, fs[89].mass, 0.001); 
+		assertEquals(6, fs[89].ordinal);
+		assertEquals(EPeptideFragment.z, fs[89].fragmentType);
 	}
 	
 	@Test
