@@ -16,9 +16,9 @@ object ClearRetentionTime {
 		lazy val ntimeOpt 	= rtFind(NORMALIZED_RETENTION_TIME_ACC)
 		lazy val localOpt 	= rtFind(LOCAL_RETENTION_TIME_ACC)
 		
-		if (irtOpt.nonEmpty)
+		if (irtOpt.nonEmpty && irtOpt.get.value.nonEmpty)
 			Some(IRT(irtOpt.get.value.get.toDouble))
-		else if (ntimeOpt.nonEmpty)
+		else if (ntimeOpt.nonEmpty && ntimeOpt.get.value.nonEmpty)
 			Some(Ntime(ntimeOpt.get.value.get.toDouble))
 		else
 			localOpt.map(local => {
