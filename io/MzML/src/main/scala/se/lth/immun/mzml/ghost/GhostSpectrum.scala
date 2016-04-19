@@ -51,7 +51,7 @@ object GhostSpectrum {
 							gs.scanWindowMin = cv.value.get.toDouble
 						case SCAN_WINDOW_MAX_ACC => 
 							gs.scanWindowMax = cv.value.get.toDouble
-						case _ => {} 
+						case _ => {}
 					}
 			} 
 			case None => {}
