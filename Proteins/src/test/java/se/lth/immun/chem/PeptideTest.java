@@ -49,6 +49,11 @@ public class PeptideTest {
 	
 	@Test
 	public void getFragments() {
+		/*
+		 Gold standard is
+		 http://db.systemsbiology.net:8080/proteomicsToolkit/FragIonServlet?sequence=ARNDCQEGHILKMFPSTWYVX&massType=monoRB&charge=1&aCB=1&xCB=1&bCB=1&yCB=1&cCB=1&zCB=1&nterm=0.0&cterm=0.0&addModifType=&addModifVal=
+		*/
+		
 		Peptide p = new Peptide(aas);
 		EPeptideFragment[] fragmentTypes = {EPeptideFragment.a, EPeptideFragment.b, EPeptideFragment.c, EPeptideFragment.x, EPeptideFragment.y, EPeptideFragment.z};
 		PeptideFragment[] fs = p.getFragments(fragmentTypes);
