@@ -70,8 +70,12 @@ class Run {
 		for (x <- cvParams) x.write(w)
 		for (x <- userParams) x.write(w)
 		
+		if (spectrumList.isEmpty && dw.specCount > 0) 
+			throw new Exception("Cannot write spectra as mzml.run.spectrumList is undefined!")
 		val spectrumIndices = spectrumList.map(_.write(w, dw.specCount, dw.writeSpectra))
 			
+		if (chromatogramList.isEmpty && dw.chromCount > 0)
+			throw new Exception("Cannot write chromatograms as mzml.run.chromatogramList is undefined!")
 		val chromatogramIndices = chromatogramList.map(_.write(w, dw.chromCount, dw.writeChromatograms))
 		
 		w.endElement
