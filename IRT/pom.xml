@@ -35,7 +35,7 @@
       <version>3.2</version>
     </dependency>
     <dependency>
-    	<groupId>se.jt</groupId>
+    	<groupId>se.johanteleman</groupId>
     	<artifactId>Visdome</artifactId>
     	<version>1.0.1</version>
     </dependency>
