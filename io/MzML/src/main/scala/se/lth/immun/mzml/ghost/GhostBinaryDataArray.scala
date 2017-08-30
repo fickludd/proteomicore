@@ -15,10 +15,10 @@ object GhostBinaryDataArray {
 	case class BytesLength(bytes:Array[Byte], length:Int)
 	
 	trait DataType
-	case class Unknown extends DataType
-	case class Time extends DataType
-	case class Intensity extends DataType
-	case class MZ extends DataType
+	case class Unknown() extends DataType
+	case class Time() extends DataType
+	case class Intensity() extends DataType
+	case class MZ() extends DataType
 	
 	case class DataDef(
 			val doublePrecision:Boolean,

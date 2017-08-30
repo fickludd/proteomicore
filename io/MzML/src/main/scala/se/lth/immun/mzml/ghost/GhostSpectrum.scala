@@ -17,6 +17,7 @@ object GhostSpectrum {
 	val ISOLATION_WINDOW_TARGET_ACC = "MS:1000827"
 	val ISOLATION_WINDOW_LOW_OFFSET_ACC = "MS:1000828"
 	val ISOLATION_WINDOW_HIGH_OFFSET_ACC = "MS:1000829"
+	val SECOND_ACC = "UO:0000010"
 	
 	case class IsolationWindow(low:Double, high:Double)		
 		
@@ -59,8 +60,12 @@ object GhostSpectrum {
 		} {
 			for (cv <- scan.cvParams)
 				cv.accession match {
-					case SCAN_START_TIME_ACC => 
-						gs.scanStartTime = cv.value.get.toDouble
+					case SCAN_START_TIME_ACC =>
+					{
+					  // We should convert to minutes if given in seconds.
+					  gs.scanStartTime = cv.value.get.toDouble
+						if (cv.unitAccession.get == SECOND_ACC) gs.scanStartTime = gs.scanStartTime/60
+					}
 					case _ => {}
 				}
 			
@@ -147,7 +152,7 @@ class GhostSpectrum {
 	var basePeakIntensity 	= 0.0
 	var basePeakMZ 			= 0.0
 	var totalIonCurrent		= 0.0
-	var scanStartTime		= 0.0
+	var scanStartTime		= 0.0 // Unit is minutes.
 	var scanMzMin:Option[Double] = None
 	var scanMzMax:Option[Double] = None
 	
