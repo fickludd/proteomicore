@@ -28,7 +28,9 @@ object Precursor {
 				}
 				case ACTIVATION => 
 					x.activation = Activation.fromFile(r)
-				case _ => r.skipThis
+				case USER_PARAM => 
+					x.userParams += UserParam.fromFile(r)
+				case _ => { r.skipThis; r.next } 
 			}
 		
 		x
@@ -39,6 +41,7 @@ class Precursor {
 	var externalSpectrumID:Option[String] = None
 	var sourceFileRef:Option[String] = None
 	var spectrumRef:Option[String] = None
+	var userParams = new ArrayBuffer[UserParam]
 	
 	var isolationWindow:Option[IsolationWindow] = None
 	var selectedIons = new ArrayBuffer[SelectedIon]
@@ -52,6 +55,8 @@ class Precursor {
 		w.writeOptional(EXTERNAL_SPECTRUM_ID, externalSpectrumID)
 		w.writeOptional(SOURCE_FILE_REF, sourceFileRef)
 		w.writeOptional(SPECTRUM_REF, spectrumRef)
+		
+		for (x <- userParams) x.write(w)
 		
 		if (isolationWindow.isDefined)
 			isolationWindow.get.write(w)
