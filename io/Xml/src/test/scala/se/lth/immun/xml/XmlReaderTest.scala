@@ -103,7 +103,7 @@ class XmlReaderTest extends AssertionsForJUnit {
 				<book title="World's End" />
 				<book title="Kafka and the world"></book>
 				<book title="Cooking across the centuries" />
-				<bible tricky="\">" />
+				<bible tricky=">" />
 			</books>
 		"""
 	

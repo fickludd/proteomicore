@@ -50,10 +50,7 @@ class CharReader(reader:Reader) {
 			if (char == CharReader.EOF) return sb.toString()
 			val c = char.toChar
 			c match {
-				case '\\' => 
-					sb += c
-					sb += next.toChar
-				case '"' =>
+				case '"' => 
 					sb ++= textElement
 				case _ =>
 					sb += c 
@@ -74,9 +71,6 @@ class CharReader(reader:Reader) {
 			if (char == CharReader.EOF) return sb.toString()
 			val c = char.toChar
 			c match {
-				case '\\' => 
-					sb += c
-					sb += next.toChar
 				case _ =>
 					sb += c
 			}
