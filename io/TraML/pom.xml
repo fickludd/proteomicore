@@ -7,7 +7,7 @@
   
   <inceptionYear>2014</inceptionYear>
   <properties>
-    <scala.version>2.10.0</scala.version>
+    <scala.version>2.10.7</scala.version>
   </properties>
 
   <dependencies>
@@ -84,4 +84,32 @@
       </plugin>
     </plugins>
   </build>
+	<name>se.lth.immun:Xml</name>
+	<description>Library for TraML</description>
+	<url>https://github.com/fickludd/proteomicore</url>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Johan Teleman</name>
+			<email>johan.teleman@immun.lth.se</email>
+			<organization>Lund University</organization>
+			<organizationUrl>http://www.immun.lth.se</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git@github.com:fickludd/proteomicore.git</connection>
+		<developerConnection>scm:git:git@github.com:fickludd/proteomicore.git</developerConnection>
+		<url>git@github.com:fickludd/proteomicore.git</url>
+	</scm>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
